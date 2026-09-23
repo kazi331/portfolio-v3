@@ -36,7 +36,8 @@ export default function LoginPage() {
         const data = await response.json();
         setError(data.message || 'Invalid email or password');
       }
-    } catch {
+    } catch (err) {
+      console.log("err", err)
       setError('An error occurred during sign in');
     } finally {
       setLoading(false);
