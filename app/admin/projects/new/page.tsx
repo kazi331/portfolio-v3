@@ -72,25 +72,25 @@ export default function NewProjectPage() {
       <div className="mb-6">
         <Link
           href="/admin/projects"
-          className="flex items-center text-gray-600 hover:text-gray-900"
+          className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-muted-text transition hover:text-primary-text"
         >
-          <ArrowLeft className="h-5 w-5 mr-2" />
+          <ArrowLeft className="h-4 w-4" />
           Back to Projects
         </Link>
       </div>
 
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Create New Project</h1>
+      <h1 className="mb-6 font-display text-3xl font-bold tracking-tight text-primary-text">Create New Project</h1>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded mb-4">
+        <div className="mb-4 rounded-[10px_2px_10px_2px] border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
+      <form onSubmit={handleSubmit} className="radius-card space-y-6 border border-white/10 bg-surface-raised p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="title" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
               Title *
             </label>
             <input
@@ -100,12 +100,12 @@ export default function NewProjectPage() {
               value={formData.title}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
             />
           </div>
 
           <div>
-            <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="slug" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
               Slug *
             </label>
             <input
@@ -115,7 +115,7 @@ export default function NewProjectPage() {
               value={formData.slug}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
             />
           </div>
         </div>
@@ -127,15 +127,15 @@ export default function NewProjectPage() {
             type="checkbox"
             checked={formData.featured}
             onChange={handleChange}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            className="h-4 w-4 rounded border-white/20 bg-surface text-accent accent-accent focus:ring-accent/30"
           />
-          <label htmlFor="featured" className="ml-2 block text-sm text-gray-900">
+          <label htmlFor="featured" className="ml-2 block text-sm text-primary-text">
             Featured Project
           </label>
         </div>
 
         <div>
-          <label htmlFor="stacks" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="stacks" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
             Tech Stacks (comma-separated) *
           </label>
           <input
@@ -145,12 +145,12 @@ export default function NewProjectPage() {
             value={formData.stacks}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
           />
         </div>
 
         <div>
-          <label htmlFor="thumbnail" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="thumbnail" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
             Thumbnail URL *
           </label>
           <input
@@ -160,12 +160,12 @@ export default function NewProjectPage() {
             value={formData.thumbnail}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
           />
         </div>
 
         <div>
-          <label htmlFor="excerpt" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="excerpt" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
             Excerpt *
           </label>
           <textarea
@@ -175,13 +175,13 @@ export default function NewProjectPage() {
             onChange={handleChange}
             required
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <label htmlFor="githubUrl" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="githubUrl" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
               GitHub URL
             </label>
             <input
@@ -190,12 +190,12 @@ export default function NewProjectPage() {
               type="url"
               value={formData.githubUrl}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
             />
           </div>
 
           <div>
-            <label htmlFor="clientLive" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="clientLive" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
               Client Live URL
             </label>
             <input
@@ -204,12 +204,12 @@ export default function NewProjectPage() {
               type="url"
               value={formData.clientLive}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
             />
           </div>
 
           <div>
-            <label htmlFor="apiLive" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="apiLive" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
               API Live URL
             </label>
             <input
@@ -218,13 +218,13 @@ export default function NewProjectPage() {
               type="url"
               value={formData.apiLive}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
             />
           </div>
         </div>
 
         <div>
-          <label htmlFor="challenge" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="challenge" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
             Challenge
           </label>
           <textarea
@@ -233,12 +233,12 @@ export default function NewProjectPage() {
             value={formData.challenge}
             onChange={handleChange}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
           />
         </div>
 
         <div>
-          <label htmlFor="solution" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="solution" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
             Solution
           </label>
           <textarea
@@ -247,12 +247,12 @@ export default function NewProjectPage() {
             value={formData.solution}
             onChange={handleChange}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
           />
         </div>
 
         <div>
-          <label htmlFor="impact" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="impact" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
             Impact
           </label>
           <textarea
@@ -261,21 +261,21 @@ export default function NewProjectPage() {
             value={formData.impact}
             onChange={handleChange}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
           />
         </div>
 
         <div className="flex justify-end space-x-4">
           <Link
             href="/admin/projects"
-            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            className="rounded-[12px_3px_12px_3px] border border-white/12 px-4 py-3 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-text transition hover:border-white/25 hover:text-primary-text"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-[12px_3px_12px_3px] border border-accent/40 bg-accent/15 px-4 py-3 font-mono text-[11px] font-bold uppercase tracking-wider text-accent-secondary transition hover:border-accent hover:bg-accent/25 hover:text-primary-text disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? 'Creating...' : 'Create Project'}
           </button>

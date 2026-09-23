@@ -111,7 +111,7 @@ export default function EditSkillPage() {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading...</div>;
+    return <div className="py-16 text-center font-mono text-[11px] uppercase tracking-widest text-muted-text">Loading...</div>;
   }
 
   return (
@@ -119,24 +119,24 @@ export default function EditSkillPage() {
       <div className="mb-6">
         <Link
           href="/admin/skills"
-          className="flex items-center text-gray-600 hover:text-gray-900"
+          className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-muted-text transition hover:text-primary-text"
         >
-          <ArrowLeft className="h-5 w-5 mr-2" />
+          <ArrowLeft className="h-4 w-4" />
           Back to Skills
         </Link>
       </div>
 
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Edit Skill</h1>
+      <h1 className="mb-6 font-display text-3xl font-bold tracking-tight text-primary-text">Edit Skill</h1>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded mb-4">
+        <div className="mb-4 rounded-[10px_2px_10px_2px] border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
+      <form onSubmit={handleSubmit} className="radius-card space-y-6 border border-white/10 bg-surface-raised p-6">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="name" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
             Skill Name *
           </label>
           <input
@@ -146,12 +146,12 @@ export default function EditSkillPage() {
             value={formData.name}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
           />
         </div>
 
         <div>
-          <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="categoryId" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
             Category *
           </label>
           <select
@@ -160,7 +160,7 @@ export default function EditSkillPage() {
             value={formData.categoryId}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
           >
             <option value="">Select a category</option>
             {categories.map((category) => (
@@ -172,7 +172,7 @@ export default function EditSkillPage() {
         </div>
 
         <div>
-          <label htmlFor="level" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="level" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
             Proficiency Level: {formData.level}%
           </label>
           <input
@@ -183,9 +183,9 @@ export default function EditSkillPage() {
             max="100"
             value={formData.level}
             onChange={handleChange}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-accent"
           />
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <div className="mt-2 flex justify-between font-mono text-[10px] uppercase tracking-widest text-muted-text">
             <span>Beginner</span>
             <span>Expert</span>
           </div>
@@ -194,14 +194,14 @@ export default function EditSkillPage() {
         <div className="flex justify-end space-x-4">
           <Link
             href="/admin/skills"
-            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            className="rounded-[12px_3px_12px_3px] border border-white/12 px-4 py-3 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-text transition hover:border-white/25 hover:text-primary-text"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={saving}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-[12px_3px_12px_3px] border border-accent/40 bg-accent/15 px-4 py-3 font-mono text-[11px] font-bold uppercase tracking-wider text-accent-secondary transition hover:border-accent hover:bg-accent/25 hover:text-primary-text disabled:cursor-not-allowed disabled:opacity-60"
           >
             {saving ? 'Saving...' : 'Save Changes'}
           </button>

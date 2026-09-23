@@ -66,25 +66,25 @@ export default function NewExperiencePage() {
       <div className="mb-6">
         <Link
           href="/admin/experiences"
-          className="flex items-center text-gray-600 hover:text-gray-900"
+          className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-muted-text transition hover:text-primary-text"
         >
-          <ArrowLeft className="h-5 w-5 mr-2" />
+          <ArrowLeft className="h-4 w-4" />
           Back to Experiences
         </Link>
       </div>
 
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Create New Experience</h1>
+      <h1 className="mb-6 font-display text-3xl font-bold tracking-tight text-primary-text">Create New Experience</h1>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded mb-4">
+        <div className="mb-4 rounded-[10px_2px_10px_2px] border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
+      <form onSubmit={handleSubmit} className="radius-card space-y-6 border border-white/10 bg-surface-raised p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="company" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
               Company
             </label>
             <input
@@ -93,12 +93,12 @@ export default function NewExperiencePage() {
               type="text"
               value={formData.company}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
             />
           </div>
 
           <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="role" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
               Role
             </label>
             <input
@@ -107,14 +107,14 @@ export default function NewExperiencePage() {
               type="text"
               value={formData.role}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="period" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="period" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
               Period (e.g., &quot;Jan 2020 - Present&quot;)
             </label>
             <input
@@ -123,12 +123,12 @@ export default function NewExperiencePage() {
               type="text"
               value={formData.period}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
             />
           </div>
 
           <div>
-            <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="duration" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
               Duration (e.g., &quot;2 years&quot;)
             </label>
             <input
@@ -137,13 +137,13 @@ export default function NewExperiencePage() {
               type="text"
               value={formData.duration}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
             />
           </div>
         </div>
 
         <div>
-          <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="location" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
             Location
           </label>
           <input
@@ -152,7 +152,7 @@ export default function NewExperiencePage() {
             type="text"
             value={formData.location}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
           />
         </div>
 
@@ -163,19 +163,19 @@ export default function NewExperiencePage() {
             type="checkbox"
             checked={formData.isCurrent}
             onChange={handleChange}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            className="h-4 w-4 rounded border-white/20 bg-surface text-accent accent-accent focus:ring-accent/30"
           />
-          <label htmlFor="isCurrent" className="ml-2 block text-sm text-gray-900">
+          <label htmlFor="isCurrent" className="ml-2 block text-sm text-primary-text">
             Current Position
           </label>
         </div>
 
-        <div className="border-t pt-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Visual Positioning (for timeline display)</h3>
+        <div className="border-t border-white/10 pt-6">
+          <h3 className="mb-4 font-display text-lg font-semibold text-primary-text">Visual Positioning (for timeline display)</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="dotX" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="dotX" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
                 Dot X Position (%)
               </label>
               <input
@@ -186,12 +186,12 @@ export default function NewExperiencePage() {
                 onChange={handleChange}
                 min="0"
                 max="100"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
               />
             </div>
 
             <div>
-              <label htmlFor="dotY" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="dotY" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
                 Dot Y Position (%)
               </label>
               <input
@@ -202,12 +202,12 @@ export default function NewExperiencePage() {
                 onChange={handleChange}
                 min="0"
                 max="100"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
               />
             </div>
 
             <div>
-              <label htmlFor="cardX" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="cardX" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
                 Card X Position (%)
               </label>
               <input
@@ -218,12 +218,12 @@ export default function NewExperiencePage() {
                 onChange={handleChange}
                 min="0"
                 max="100"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
               />
             </div>
 
             <div>
-              <label htmlFor="cardY" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="cardY" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
                 Card Y Position (%)
               </label>
               <input
@@ -234,14 +234,14 @@ export default function NewExperiencePage() {
                 onChange={handleChange}
                 min="0"
                 max="100"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
             <div>
-              <label htmlFor="yearLabel" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="yearLabel" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
                 Year Label
               </label>
               <input
@@ -250,12 +250,12 @@ export default function NewExperiencePage() {
                 type="text"
                 value={formData.yearLabel}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
               />
             </div>
 
             <div>
-              <label htmlFor="color" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="color" className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-text">
                 Color (hex)
               </label>
               <input
@@ -265,7 +265,7 @@ export default function NewExperiencePage() {
                 value={formData.color}
                 onChange={handleChange}
                 placeholder="#3B82F6"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-[10px_2px_10px_2px] border border-white/12 bg-surface px-3.5 py-3 text-sm text-primary-text caret-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition placeholder:text-muted-text/70 focus:border-accent focus:ring-2 focus:ring-accent/30"
               />
             </div>
           </div>
@@ -274,14 +274,14 @@ export default function NewExperiencePage() {
         <div className="flex justify-end space-x-4">
           <Link
             href="/admin/experiences"
-            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            className="rounded-[12px_3px_12px_3px] border border-white/12 px-4 py-3 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-text transition hover:border-white/25 hover:text-primary-text"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-[12px_3px_12px_3px] border border-accent/40 bg-accent/15 px-4 py-3 font-mono text-[11px] font-bold uppercase tracking-wider text-accent-secondary transition hover:border-accent hover:bg-accent/25 hover:text-primary-text disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? 'Creating...' : 'Create Experience'}
           </button>

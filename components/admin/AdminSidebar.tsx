@@ -1,12 +1,12 @@
 'use client';
 
 import {
-    Award,
-    Briefcase,
-    FileText,
-    FolderKanban,
-    LayoutDashboard,
-    LogOut
+  Award,
+  Briefcase,
+  FileText,
+  FolderKanban,
+  LayoutDashboard,
+  LogOut,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -28,26 +28,35 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="w-64 bg-white shadow-lg min-h-screen">
-      <div className="p-6">
-        <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+    <aside className="z-20 flex w-full shrink-0 flex-col border-b border-white/10 bg-surface/90 backdrop-blur-md md:sticky md:top-0 md:h-screen md:w-64 md:border-b-0 md:border-r">
+      <div className="px-6 pb-4 pt-6">
+        <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-accent-secondary">
+          Workspace
+        </p>
+        <h1 className="mt-2 font-display text-2xl font-bold tracking-tight text-primary-text">
+          Admin
+        </h1>
       </div>
-      
-      <nav className="mt-6">
-        <ul className="space-y-2 px-4">
+
+      <nav className="px-3 pb-3 md:flex-1">
+        <ul className="flex gap-2 overflow-x-auto md:block md:space-y-1">
           {navigation.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive =
+              item.href === '/admin'
+                ? pathname === item.href
+                : pathname === item.href || pathname.startsWith(`${item.href}/`);
+
             return (
-              <li key={item.name}>
+              <li key={item.name} className="shrink-0">
                 <Link
                   href={item.href}
-                  className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
+                  className={`flex items-center gap-3 rounded-[10px_2px_10px_2px] px-4 py-3 font-mono text-[11px] uppercase tracking-wider transition ${
                     isActive
-                      ? 'bg-blue-50 text-blue-600'
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'border border-accent/40 bg-accent/15 text-accent-secondary'
+                      : 'border border-transparent text-muted-text hover:bg-white/5 hover:text-primary-text'
                   }`}
                 >
-                  <item.icon className="h-5 w-5 mr-3" />
+                  <item.icon className="h-4 w-4" />
                   {item.name}
                 </Link>
               </li>
@@ -56,12 +65,12 @@ export default function AdminSidebar() {
         </ul>
       </nav>
 
-      <div className="absolute bottom-0 left-0 w-64 p-4">
+      <div className="px-3 pb-4">
         <button
           onClick={handleLogout}
-          className="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+          className="flex w-full items-center gap-3 rounded-[10px_2px_10px_2px] px-4 py-3 font-mono text-[11px] uppercase tracking-wider text-muted-text transition hover:bg-white/5 hover:text-primary-text"
         >
-          <LogOut className="h-5 w-5 mr-3" />
+          <LogOut className="h-4 w-4" />
           Logout
         </button>
       </div>

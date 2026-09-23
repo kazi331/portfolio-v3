@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 import { Inter, Space_Grotesk, Playfair_Display, Fugaz_One, Shrikhand } from 'next/font/google';
-import SmoothScroll from '@/components/shared/SmoothScroll';
-import PageLoader from '@/components/layout/PageLoader';
 import { siteConfig } from '@/lib/seo';
 import { personalInfo } from '@/lib/data';
 import './globals.css';
@@ -209,11 +207,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="bg-[#090909] text-[#F5F5F5] antialiased font-sans">
-        <PageLoader />
-        <SmoothScroll>
-          {children}
-        </SmoothScroll>
+      <body className="bg-background text-primary-text antialiased font-sans">
+        {children}
       </body>
     </html>
   );
