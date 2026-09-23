@@ -27,39 +27,39 @@ export default function EditProjectPage() {
   });
 
   useEffect(() => {
-    fetchProject();
-  }, [params.id, fetchProject]);
-
-  const fetchProject = async () => {
-    try {
-      const response = await fetch(`/api/admin/projects/${params.id}`);
-      const data = await response.json();
-      
-      if (response.ok) {
-        const project = data.project;
-        setFormData({
-          title: project.title,
-          slug: project.slug,
-          featured: project.featured,
-          stacks: project.stacks,
-          thumbnail: project.thumbnail,
-          excerpt: project.excerpt,
-          githubUrl: project.githubUrl || '',
-          clientLive: project.clientLive || '',
-          apiLive: project.apiLive || '',
-          challenge: project.challenge || '',
-          solution: project.solution || '',
-          impact: project.impact || '',
-        });
-      } else {
-        setError(data.error || 'Failed to fetch project');
+    const fetchProject = async () => {
+      try {
+        const response = await fetch(`/api/admin/projects/${params.id}`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          const project = data.project;
+          setFormData({
+            title: project.title,
+            slug: project.slug,
+            featured: project.featured,
+            stacks: project.stacks,
+            thumbnail: project.thumbnail,
+            excerpt: project.excerpt,
+            githubUrl: project.githubUrl || '',
+            clientLive: project.clientLive || '',
+            apiLive: project.apiLive || '',
+            challenge: project.challenge || '',
+            solution: project.solution || '',
+            impact: project.impact || '',
+          });
+        } else {
+          setError(data.error || 'Failed to fetch project');
+        }
+      } catch (err) {
+        setError('An error occurred while fetching the project');
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setError('An error occurred while fetching the project');
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    fetchProject();
+  }, [params.id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;

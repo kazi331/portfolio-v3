@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // GET single project
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const isAuthenticated = await checkAuth();
@@ -14,8 +14,9 @@ export async function GET(
       return unauthorizedResponse();
     }
 
+    const { id } = await params;
     const project = await prisma.project.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!project) {
@@ -35,7 +36,7 @@ export async function GET(
 // PUT update project
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const isAuthenticated = await checkAuth();
@@ -62,8 +63,9 @@ export async function PUT(
       metrics,
     } = body;
 
+    const { id } = await params;
     const project = await prisma.project.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title,
         slug,
@@ -95,7 +97,7 @@ export async function PUT(
 // DELETE project
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const isAuthenticated = await checkAuth();
@@ -104,8 +106,9 @@ export async function DELETE(
       return unauthorizedResponse();
     }
 
+    const { id } = await params;
     await prisma.project.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: 'Project deleted successfully' });

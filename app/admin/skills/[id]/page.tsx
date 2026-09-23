@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 interface Category {
   id: string;
@@ -25,29 +25,42 @@ export default function EditSkillPage() {
   });
 
   useEffect(() => {
+    const fetchSkill = async () => {
+      try {
+        const response = await fetch(`/api/admin/skills/${params.id}`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          setFormData({
+            name: data.skill.name,
+            level: data.skill.level,
+            categoryId: data.skill.categoryId,
+          });
+        } else {
+          setError(data.error || 'Failed to fetch skill');
+        }
+      } catch (err) {
+        setError('An error occurred while fetching the skill');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/admin/skill-categories');
+        const data = await response.json();
+        
+        if (response.ok) {
+          setCategories(data.categories);
+        }
+      } catch (err) {
+        console.error('Failed to fetch categories');
+      }
+    };
+
     Promise.all([fetchSkill(), fetchCategories()]);
   }, [params.id]);
-
-  const fetchSkill = async () => {
-    try {
-      const response = await fetch(`/api/admin/skills/${params.id}`);
-      const data = await response.json();
-      
-      if (response.ok) {
-        setFormData({
-          name: data.skill.name,
-          level: data.skill.level,
-          categoryId: data.skill.categoryId,
-        });
-      } else {
-        setError(data.error || 'Failed to fetch skill');
-      }
-    } catch (err) {
-      setError('An error occurred while fetching the skill');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const fetchCategories = async () => {
     try {

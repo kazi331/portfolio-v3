@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // GET single skill
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const isAuthenticated = await checkAuth();
@@ -14,8 +14,9 @@ export async function GET(
       return unauthorizedResponse();
     }
 
+    const { id } = await params;
     const skill = await prisma.skill.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         category: true,
       },
@@ -38,7 +39,7 @@ export async function GET(
 // PUT update skill
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const isAuthenticated = await checkAuth();
@@ -50,8 +51,9 @@ export async function PUT(
     const body = await request.json();
     const { name, level, categoryId } = body;
 
+    const { id } = await params;
     const skill = await prisma.skill.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name,
         level,
@@ -75,7 +77,7 @@ export async function PUT(
 // DELETE skill
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const isAuthenticated = await checkAuth();
@@ -84,8 +86,9 @@ export async function DELETE(
       return unauthorizedResponse();
     }
 
+    const { id } = await params;
     await prisma.skill.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: 'Skill deleted successfully' });

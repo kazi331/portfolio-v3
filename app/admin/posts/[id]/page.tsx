@@ -22,33 +22,33 @@ export default function EditPostPage() {
   });
 
   useEffect(() => {
-    fetchPost();
-  }, [params.id, fetchPost]);
-
-  const fetchPost = async () => {
-    try {
-      const response = await fetch(`/api/admin/posts/${params.id}`);
-      const data = await response.json();
-      
-      if (response.ok) {
-        setFormData({
-          title: data.post.title,
-          slug: data.post.slug,
-          category: data.post.category || '',
-          excerpt: data.post.excerpt || '',
-          content: data.post.content,
-          thumbnail: data.post.thumbnail,
-          tags: data.post.tags || '',
-        });
-      } else {
-        setError(data.error || 'Failed to fetch post');
+    const fetchPost = async () => {
+      try {
+        const response = await fetch(`/api/admin/posts/${params.id}`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          setFormData({
+            title: data.post.title,
+            slug: data.post.slug,
+            category: data.post.category || '',
+            excerpt: data.post.excerpt || '',
+            content: data.post.content,
+            thumbnail: data.post.thumbnail,
+            tags: data.post.tags || '',
+          });
+        } else {
+          setError(data.error || 'Failed to fetch post');
+        }
+      } catch (err) {
+        setError('An error occurred while fetching the post');
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setError('An error occurred while fetching the post');
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    fetchPost();
+  }, [params.id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({

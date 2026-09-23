@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // GET single experience
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const isAuthenticated = await checkAuth();
@@ -14,8 +14,9 @@ export async function GET(
       return unauthorizedResponse();
     }
 
+    const { id } = await params;
     const experience = await prisma.experience.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!experience) {
@@ -35,7 +36,7 @@ export async function GET(
 // PUT update experience
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const isAuthenticated = await checkAuth();
@@ -61,8 +62,9 @@ export async function PUT(
       isCurrent,
     } = body;
 
+    const { id } = await params;
     const experience = await prisma.experience.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         company,
         role,
@@ -93,7 +95,7 @@ export async function PUT(
 // DELETE experience
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const isAuthenticated = await checkAuth();
@@ -102,8 +104,9 @@ export async function DELETE(
       return unauthorizedResponse();
     }
 
+    const { id } = await params;
     await prisma.experience.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: 'Experience deleted successfully' });

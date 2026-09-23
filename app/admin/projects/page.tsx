@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Edit, Plus, Trash2 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface Project {
   id: string;
@@ -121,10 +122,12 @@ export default function ProjectsPage() {
                   )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <img
+                  <Image
                     src={project.thumbnail}
                     alt={project.title}
-                    className="h-10 w-10 object-cover rounded"
+                    width={40}
+                    height={40}
+                    className="object-cover rounded"
                   />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

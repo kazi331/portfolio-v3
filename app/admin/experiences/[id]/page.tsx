@@ -27,39 +27,39 @@ export default function EditExperiencePage() {
   });
 
   useEffect(() => {
+    const fetchExperience = async () => {
+      try {
+        const response = await fetch(`/api/admin/experiences/${params.id}`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          const experience = data.experience;
+          setFormData({
+            company: experience.company || '',
+            role: experience.role || '',
+            period: experience.period || '',
+            duration: experience.duration || '',
+            location: experience.location || '',
+            dotX: experience.dotX || 0,
+            dotY: experience.dotY || 0,
+            cardX: experience.cardX || 0,
+            cardY: experience.cardY || 0,
+            yearLabel: experience.yearLabel || '',
+            color: experience.color || '',
+            isCurrent: experience.isCurrent || false,
+          });
+        } else {
+          setError(data.error || 'Failed to fetch experience');
+        }
+      } catch (err) {
+        setError('An error occurred while fetching the experience');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchExperience();
   }, [params.id]);
-
-  const fetchExperience = async () => {
-    try {
-      const response = await fetch(`/api/admin/experiences/${params.id}`);
-      const data = await response.json();
-      
-      if (response.ok) {
-        const experience = data.experience;
-        setFormData({
-          company: experience.company || '',
-          role: experience.role || '',
-          period: experience.period || '',
-          duration: experience.duration || '',
-          location: experience.location || '',
-          dotX: experience.dotX || 0,
-          dotY: experience.dotY || 0,
-          cardX: experience.cardX || 0,
-          cardY: experience.cardY || 0,
-          yearLabel: experience.yearLabel || '',
-          color: experience.color || '',
-          isCurrent: experience.isCurrent || false,
-        });
-      } else {
-        setError(data.error || 'Failed to fetch experience');
-      }
-    } catch (err) {
-      setError('An error occurred while fetching the experience');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : 

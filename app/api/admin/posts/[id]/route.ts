@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // GET single post
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const isAuthenticated = await checkAuth();
@@ -14,8 +14,9 @@ export async function GET(
       return unauthorizedResponse();
     }
 
+    const { id } = await params;
     const post = await prisma.post.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         user: {
           select: {
@@ -46,7 +47,7 @@ export async function GET(
 // PUT update post
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const isAuthenticated = await checkAuth();
@@ -66,8 +67,9 @@ export async function PUT(
       tags,
     } = body;
 
+    const { id } = await params;
     const post = await prisma.post.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title,
         slug,
@@ -101,7 +103,7 @@ export async function PUT(
 // DELETE post
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const isAuthenticated = await checkAuth();
@@ -110,8 +112,9 @@ export async function DELETE(
       return unauthorizedResponse();
     }
 
+    const { id } = await params;
     await prisma.post.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: 'Post deleted successfully' });
