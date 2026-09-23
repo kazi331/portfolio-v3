@@ -266,7 +266,7 @@ export default function TechStackV2() {
           {/* Controls at Top Right */}
           <div className="hidden md:flex items-center gap-3 self-start md:self-auto">
             {/* View Switcher: 2D Constellation vs 3D Orbital Globe */}
-            <div className="flex items-center p-1 bg-[#141820] border border-white/10 rounded-[8px_2px_8px_2px]">
+            {/* <div className="flex items-center p-1 bg-[#141820] border border-white/10 rounded-[8px_2px_8px_2px]">
               <button
                 onClick={() => setDesktopViewMode('constellation')}
                 className={`flex items-center gap-1.5 px-3 py-1 rounded-[6px_2px_6px_2px] font-mono text-[10px] uppercase tracking-wider transition-all cursor-pointer ${
@@ -287,7 +287,7 @@ export default function TechStackV2() {
               >
                 <span>3D Orbital</span>
               </button>
-            </div>
+            </div> */}
 
             <div className="flex items-center gap-2.5 px-3.5 py-1.5 bg-[#141820] border border-white/10 rounded-[8px_2px_8px_2px] shadow-md">
               <Sparkles className="w-3.5 h-3.5 text-accent" />
