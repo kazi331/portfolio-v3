@@ -1,0 +1,157 @@
+
+// Pertial Table
+TablePartial base {
+  id String [increment, unique, not null, pk]
+  created_at datetime
+  updated_at datetime
+  deleted_at datetime
+}
+
+
+// for authentication
+Table users {
+  ~base
+  name String
+  email String [unique]
+  phone Varchar(11) [unique]
+  avatar String [default: null]
+}
+
+// posts
+Table posts {
+  ~base
+  user_id String [not null, ref: > users.id]
+  title String [not null]
+  slug String [not null]
+  category String
+  excerpt String
+  content text [not null]
+  thumbnail String [not null]
+  views Int [default: 0]
+  tags String [note: 'array like string']
+}
+
+Table post_comments {
+  ~base
+  user_id String [not null, ref: > users.id]
+  content Text [not null]
+  upvotes Int [default: 0]
+  downvotes Int [default: 0]
+}
+
+Table post_reactions {
+  id String [not null, unique, pk]
+  post_id String [not null, ref: > posts.id]
+  like int [default: 0]
+  love int [default: 0]
+  heart int [default: 0]
+  angry int [default: 0]
+}
+
+Table post_tags {
+  ~base
+  title String [not null]
+  slug String [not null]
+}
+
+Table post_category{
+  ~base
+  title Sting [not null]
+  slug String [not null]
+  desc text
+}
+
+// projects
+
+Table projects {
+  ~base 
+  title String [not null]
+  slug String [not null]
+  featured bool [default: false]
+  stacks String [not null, note: 'comma separated stack']
+  thumbnail String [not null]
+  excerpt String [not null]
+  links jsonb [note: 'github links, live links like']
+  github_url String
+  client_live String
+  api_live String
+  challenge String
+  solution String
+  impact String
+  metrics jsonb [note: '{label: string, value: string}[]']
+}
+
+// Mobile tech stack
+Table mobile_tech_stacks{
+  id String [pk, not null]
+  name String
+  category enum('frontend', 'backend' , 'database' , 'tooling')
+  type enum('core' , 'data' , 'learning')
+  experience String
+  level number
+  description String
+  relatedProject jsonb [note: '{name: string, slug: string}']
+  color String
+  accentHex String
+}
+
+Table skill_category{
+  ~base
+  name String
+  slug String
+}
+
+Table skills{
+  id String [pk, not null]
+  name String [not null]
+  level Int [not null]
+  category_id String [not null, ref: > skill_category.id]
+}
+
+Table experiences{
+  ~base
+  company String
+  role String
+  period String
+  duration String
+  location String
+  highlights jsonb [note: '{ icon: React.ReactNode, text: string}[]']
+  // Coordinates for dot placement in percentage of canvas
+  dotX Int
+  dotY Int
+  // Coordinates for card placement in percentage of canvas
+  cardX Int
+  cardY  Int
+  yearLabel String
+  color String
+  isCurrent bool [default: false]
+}
+
+Table Certificates {
+  ~base
+  name String 
+  issuer String 
+  completedDate String 
+  url String 
+  display bool [default: true]
+}
+
+// Records
+Records projects (links, metrics){
+  '{ \
+    "github": { \
+      "combined": true, \
+      "client": "client link", \
+      "server": "server link" \
+    }, \
+    "live link": { \
+      "combined": false, \
+      "client": "client link", \
+      "server": "server" \
+    } \
+  }', "[ \
+      { label: 'Engagement', value: '+40%' }, \
+      { label: 'Admin Overhead', value: '-25%' }, \
+      { label: 'API Roundtrips', value: '-40%' } \
+  ]"
+}
