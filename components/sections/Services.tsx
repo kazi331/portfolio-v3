@@ -9,8 +9,9 @@ import ServiceCard from '@/components/cards/ServiceCard';
 
 export default function Services() {
   return (
-    <Section id="services" className="bg-[#121212]/20">
-      <Container>
+    <Section id="services" className="bg-[#0A0C0F] border-b border-white/10 relative py-20">
+      <div className="absolute inset-0 tech-grid opacity-30 pointer-events-none z-0" />
+      <Container className="relative z-10">
         <SectionHeading
           title="Full Stack Solutions"
           subtitle="Engineering Services"

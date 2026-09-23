@@ -21,9 +21,10 @@ export default function FeaturedProjects() {
     : 0;
 
   return (
-    <Section id="featured-projects" className="bg-[#090909] relative">
+    <Section id="featured-projects" className="bg-[#0A0C0F] border-b border-white/10 relative py-20">
       <div id="projects" className="absolute top-0 left-0 pointer-events-none" />
-      <Container>
+      <div className="absolute inset-0 tech-grid opacity-40 pointer-events-none z-0" />
+      <Container className="relative z-10">
         <SectionHeading
           title="Featured Projects"
           subtitle="Selected Works"

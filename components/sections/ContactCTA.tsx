@@ -8,20 +8,18 @@ import { Calendar, Mail } from 'lucide-react';
 
 export default function ContactCTA() {
   return (
-    <Section id="contact-cta" className="py-20 md:py-28 relative overflow-hidden bg-[#090909]">
-      {/* Decorative vector background */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#4E85BF]/3 rounded-full blur-3xl pointer-events-none" />
+    <Section id="contact-cta" className="py-20 md:py-28 relative overflow-hidden bg-[#0A0C0F] border-b border-white/10">
+      {/* Technical CAD line grid */}
+      <div className="absolute inset-0 tech-grid opacity-50 pointer-events-none z-0" />
 
-      <Container>
-        <div className="border border-white/10 bg-[#121212]/50 rounded-[40px] p-8 md:p-16 text-center max-w-4xl mx-auto flex flex-col items-center relative overflow-hidden shadow-2xl">
-          <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-[#4E85BF]/5 rounded-full blur-3xl" />
-
-          <span className="text-xs uppercase tracking-[0.25em] text-[#4E85BF] font-mono mb-4 block font-bold">
+      <Container className="relative z-10">
+        <div className="border border-white/15 bg-[#0E1218] rounded-[24px_6px_24px_6px] p-8 md:p-16 text-center max-w-4xl mx-auto flex flex-col items-center relative overflow-hidden shadow-2xl">
+          <span className="text-xs uppercase tracking-[0.25em] text-accent font-mono mb-4 block font-semibold">
             Work with Me
           </span>
 
           <h3 className="text-3xl md:text-5xl font-serif text-[#F5F5F5] mb-4 font-normal tracking-tight max-w-2xl leading-tight">
-            Have a project in mind? Let&apos;s build something <span className="italic font-light text-[#89AACC]">resilient</span>.
+            Have a project in mind? Let&apos;s build something <span className="italic font-light text-accent-secondary">resilient</span>.
           </h3>
 
           <p className="text-muted-text text-xs md:text-sm max-w-lg leading-relaxed mb-10 font-sans">

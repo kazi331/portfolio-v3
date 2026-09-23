@@ -31,6 +31,70 @@ interface HistoryPoint {
   time: number;
 }
 
+// 3x3 matrix multiplication helper
+function multiply3x3(A: number[][], B: number[][]): number[][] {
+  const R = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+  ];
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      R[i][j] = A[i][0] * B[0][j] + A[i][1] * B[1][j] + A[i][2] * B[2][j];
+    }
+  }
+  return R;
+}
+
+// Orthonormalize matrix to eliminate accumulated floating-point inaccuracies
+function orthonormalize(M: number[][]) {
+  let l0 = Math.hypot(M[0][0], M[0][1], M[0][2]);
+  if (l0 > 1e-6) {
+    M[0][0] /= l0;
+    M[0][1] /= l0;
+    M[0][2] /= l0;
+  }
+  const dot01 = M[1][0] * M[0][0] + M[1][1] * M[0][1] + M[1][2] * M[0][2];
+  M[1][0] -= dot01 * M[0][0];
+  M[1][1] -= dot01 * M[0][1];
+  M[1][2] -= dot01 * M[0][2];
+  let l1 = Math.hypot(M[1][0], M[1][1], M[1][2]);
+  if (l1 > 1e-6) {
+    M[1][0] /= l1;
+    M[1][1] /= l1;
+    M[1][2] /= l1;
+  }
+  M[2][0] = M[0][1] * M[1][2] - M[0][2] * M[1][1];
+  M[2][1] = M[0][2] * M[1][0] - M[0][0] * M[1][2];
+  M[2][2] = M[0][0] * M[1][1] - M[0][1] * M[1][0];
+}
+
+// Camera-relative delta rotation (Euler-free, infinite 3D spin in every direction)
+function getDeltaRotation(ax: number, ay: number): number[][] {
+  const cosX = Math.cos(ax);
+  const sinX = Math.sin(ax);
+  const cosY = Math.cos(ay);
+  const sinY = Math.sin(ay);
+
+  return [
+    [cosY, 0, sinY],
+    [sinX * sinY, cosX, -sinX * cosY],
+    [-cosX * sinY, sinX, cosX * cosY],
+  ];
+}
+
+// Arbitrary axis-angle rotation (Rodrigues formula) for great-circle flight navigation
+function getAxisAngleRotation(ax: number, ay: number, az: number, angle: number): number[][] {
+  const c = Math.cos(angle);
+  const s = Math.sin(angle);
+  const t = 1 - c;
+  return [
+    [t * ax * ax + c, t * ax * ay - s * az, t * ax * az + s * ay],
+    [t * ax * ay + s * az, t * ay * ay + c, t * ay * az - s * ax],
+    [t * ax * az - s * ay, t * ay * az + s * ax, t * az * az + c],
+  ];
+}
+
 export default function MobileSphereTechStack() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -38,17 +102,21 @@ export default function MobileSphereTechStack() {
   const [selectedTech, setSelectedTech] = useState<MobileTechItem>(mobileTechList[1]); // Default to React
   const [isInteracting, setIsInteracting] = useState(false);
 
-  // Rotation angles and velocities
-  const rotationRef = useRef({
-    angleX: 0.15,
-    angleY: 0.4,
+  // 3x3 Orthonormal Rotation Matrix representing the orientation of the 3D globe (Google Earth trackball)
+  const matrixRef = useRef<number[][]>([
+    [1, 0, 0],
+    [0, 1, 0],
+    [0, 0, 1],
+  ]);
+
+  // Angular velocities around screen X (pitch) and screen Y (yaw)
+  const velRef = useRef({
     velX: 0,
-    velY: 0.0022, // gentle ambient spin
+    velY: 0.0020, // gentle ambient spin
   });
 
-  // Programmatic rotation target (for smooth step / tap transitions)
-  const targetAngleYRef = useRef<number | null>(null);
-  const targetAngleXRef = useRef<number | null>(null);
+  // Programmatic rotation target (for smooth shortest-arc great circle transitions)
+  const targetNodeIndexRef = useRef<number | null>(null);
 
   // Selected & Centered tracking refs for fast 60/120fps synchronization without render thrashing
   const selectedTechIdRef = useRef<string>(mobileTechList[1].id);
@@ -99,12 +167,35 @@ export default function MobileSphereTechStack() {
       };
     });
 
-    // Initialize rotation angle so React (item index 1) is front and center
+    // Initialize rotation matrix so React (item index 1) is front and center [0, 0, 1]
     const reactNode = nodesRef.current[1];
     if (reactNode) {
-      const r = Math.sqrt(reactNode.x0 * reactNode.x0 + reactNode.z0 * reactNode.z0);
-      rotationRef.current.angleY = Math.atan2(reactNode.x0, reactNode.z0);
-      rotationRef.current.angleX = Math.atan2(reactNode.y0, Math.max(0.001, r));
+      const uZ = [reactNode.x0, reactNode.y0, reactNode.z0];
+      const lenZ = Math.hypot(uZ[0], uZ[1], uZ[2]) || 1;
+      uZ[0] /= lenZ;
+      uZ[1] /= lenZ;
+      uZ[2] /= lenZ;
+
+      let uX = [uZ[2], 0, -uZ[0]];
+      let lenX = Math.hypot(uX[0], uX[1], uX[2]);
+      if (lenX < 1e-4) {
+        uX = [1, 0, 0];
+      } else {
+        uX[0] /= lenX;
+        uX[1] /= lenX;
+        uX[2] /= lenX;
+      }
+      const uY = [
+        uZ[1] * uX[2] - uZ[2] * uX[1],
+        uZ[2] * uX[0] - uZ[0] * uX[2],
+        uZ[0] * uX[1] - uZ[1] * uX[0],
+      ];
+
+      matrixRef.current = [
+        [uX[0], uX[1], uX[2]],
+        [uY[0], uY[1], uY[2]],
+        [uZ[0], uZ[1], uZ[2]],
+      ];
     }
   }, []);
 
@@ -134,24 +225,9 @@ export default function MobileSphereTechStack() {
     const node = nodesRef.current[index];
     if (!node) return;
 
-    const targetY = Math.atan2(node.x0, node.z0);
-    const r = Math.sqrt(node.x0 * node.x0 + node.z0 * node.z0);
-    const targetX = Math.atan2(node.y0, Math.max(0.001, r));
-
-    const rot = rotationRef.current;
-
-    // Calculate shortest angular path for angleY around 2*PI circle
-    const twoPi = 2 * Math.PI;
-    const currentWrapped = ((rot.angleY % twoPi) + twoPi) % twoPi;
-    const targetWrapped = ((targetY % twoPi) + twoPi) % twoPi;
-    let diffY = targetWrapped - currentWrapped;
-    if (diffY > Math.PI) diffY -= twoPi;
-    if (diffY < -Math.PI) diffY += twoPi;
-
-    targetAngleYRef.current = rot.angleY + diffY;
-    targetAngleXRef.current = targetX;
-    rot.velX = 0;
-    rot.velY = 0;
+    targetNodeIndexRef.current = index;
+    velRef.current.velX = 0;
+    velRef.current.velY = 0;
 
     const item = mobileTechList[index];
     selectedTechIdRef.current = item.id;
@@ -171,12 +247,13 @@ export default function MobileSphereTechStack() {
     let width = 0;
     let height = 0;
     let dpr = 1;
+    let frameCount = 0;
 
     const updateDimensions = () => {
       if (!containerRef.current || !canvas) return;
       const rect = containerRef.current.getBoundingClientRect();
       width = rect.width || 340;
-      height = Math.min(380, Math.max(320, width * 0.95));
+      height = Math.min(440, Math.max(320, width * 0.95));
 
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = width * dpr;
@@ -191,49 +268,63 @@ export default function MobileSphereTechStack() {
 
     // Render loop
     const render = () => {
-      const rot = rotationRef.current;
+      frameCount++;
       const touch = touchStateRef.current;
+      const vel = velRef.current;
 
-      // 1. Inertia & Ambient rotation physics
+      // 1. Inertia & Ambient rotation physics (infinite in all axes, Google Earth style)
       if (!touch.isDown) {
-        if (targetAngleYRef.current !== null && targetAngleXRef.current !== null) {
-          const diffY = targetAngleYRef.current - rot.angleY;
-          const diffX = targetAngleXRef.current - rot.angleX;
-          rot.angleY += diffY * 0.12;
-          rot.angleX += diffX * 0.12;
-          if (Math.abs(diffY) < 0.001 && Math.abs(diffX) < 0.001) {
-            rot.angleY = targetAngleYRef.current;
-            rot.angleX = targetAngleXRef.current;
-            targetAngleYRef.current = null;
-            targetAngleXRef.current = null;
+        if (targetNodeIndexRef.current !== null) {
+          const targetNode = nodesRef.current[targetNodeIndexRef.current];
+          if (targetNode) {
+            const M = matrixRef.current;
+            // Target node's current projected vector in screen space
+            const px = M[0][0] * targetNode.x0 + M[0][1] * targetNode.y0 + M[0][2] * targetNode.z0;
+            const py = M[1][0] * targetNode.x0 + M[1][1] * targetNode.y0 + M[1][2] * targetNode.z0;
+            const pz = M[2][0] * targetNode.x0 + M[2][1] * targetNode.y0 + M[2][2] * targetNode.z0;
+
+            // We want (px, py, pz) to rotate towards (0, 0, 1)
+            // Screen-space rotation axis: P x (0, 0, 1) = (py, -px, 0)
+            const axisX = py;
+            const axisY = -px;
+            const axisLen = Math.hypot(axisX, axisY);
+
+            if (axisLen > 0.002) {
+              const angle = Math.atan2(axisLen, pz);
+              const stepAngle = Math.min(angle, Math.max(0.002, angle * 0.14));
+              const stepRot = getAxisAngleRotation(axisX / axisLen, axisY / axisLen, 0, stepAngle);
+              matrixRef.current = multiply3x3(stepRot, matrixRef.current);
+            } else {
+              targetNodeIndexRef.current = null;
+            }
+          } else {
+            targetNodeIndexRef.current = null;
           }
         } else {
-          // Premium fluid deceleration (velocity-based inertia)
-          const friction = 0.952; // gentle smooth decay
-          rot.velY *= friction;
-          rot.velX *= friction;
+          // Continuous infinite inertia physics
+          const stepRot = getDeltaRotation(vel.velX, vel.velY);
+          matrixRef.current = multiply3x3(stepRot, matrixRef.current);
+
+          // Fluid deceleration decay
+          const friction = 0.958;
+          vel.velX *= friction;
+          vel.velY *= friction;
 
           // Seamless transition into ambient slow cruise when momentum settles
-          if (Math.abs(rot.velY) < 0.0012 && Math.abs(rot.velX) < 0.0012) {
-            const ambient = 0.0020;
-            rot.velY = rot.velY * 0.94 + ambient * 0.06;
-            rot.velX = 0;
+          if (Math.hypot(vel.velX, vel.velY) < 0.0014) {
+            const ambient = 0.0018;
+            vel.velY = vel.velY * 0.94 + ambient * 0.06;
+            vel.velX *= 0.94;
           }
-
-          rot.angleY += rot.velY;
-          rot.angleX += rot.velX;
         }
       }
 
-      // Allow full vertical tilt range so poles can reach the equator/center, but prevent inversion
-      rot.angleX = Math.max(-1.50, Math.min(1.50, rot.angleX));
+      // Periodically orthonormalize matrix to preserve exact geometry indefinitely
+      if (frameCount % 15 === 0) {
+        orthonormalize(matrixRef.current);
+      }
 
-      // Trig values for 3D rotation matrix
-      const cosX = Math.cos(rot.angleX);
-      const sinX = Math.sin(rot.angleX);
-      const cosY = Math.cos(rot.angleY);
-      const sinY = Math.sin(rot.angleY);
-
+      const M = matrixRef.current;
       const centerX = width / 2;
       const centerY = height / 2;
       const sphereRadius = Math.min(width, height) * 0.41;
@@ -269,10 +360,9 @@ export default function MobileSphereTechStack() {
 
       // 2. Rotate and project background satellite signals
       satellitesRef.current.forEach((sat) => {
-        const x1 = sat.x0 * cosY - sat.z0 * sinY;
-        const z1 = sat.z0 * cosY + sat.x0 * sinY;
-        const y1 = sat.y0 * cosX - z1 * sinX;
-        const z2 = z1 * cosX + sat.y0 * sinX;
+        const x1 = M[0][0] * sat.x0 + M[0][1] * sat.y0 + M[0][2] * sat.z0;
+        const y1 = M[1][0] * sat.x0 + M[1][1] * sat.y0 + M[1][2] * sat.z0;
+        const z2 = M[2][0] * sat.x0 + M[2][1] * sat.y0 + M[2][2] * sat.z0;
 
         const scale = fov / (fov + z2 * sphereRadius);
         const sx = centerX + x1 * sphereRadius * scale;
@@ -287,13 +377,9 @@ export default function MobileSphereTechStack() {
 
       // 3. Rotate and project primary Technology Nodes
       const projectedNodes = nodesRef.current.map((node) => {
-        // Rotate around Y axis (continuous 360-degree loop)
-        const x1 = node.x0 * cosY - node.z0 * sinY;
-        const z1 = node.z0 * cosY + node.x0 * sinY;
-
-        // Rotate around X axis (pitch tilt)
-        const y1 = node.y0 * cosX - z1 * sinX;
-        const z2 = z1 * cosX + node.y0 * sinX;
+        const x1 = M[0][0] * node.x0 + M[0][1] * node.y0 + M[0][2] * node.z0;
+        const y1 = M[1][0] * node.x0 + M[1][1] * node.y0 + M[1][2] * node.z0;
+        const z2 = M[2][0] * node.x0 + M[2][1] * node.y0 + M[2][2] * node.z0;
 
         node.x = x1;
         node.y = y1;
@@ -337,7 +423,7 @@ export default function MobileSphereTechStack() {
         if (frontCenterNode.item.id !== selectedTechIdRef.current) {
           const now = Date.now();
           // Real-time update throttled so high-speed flicks don't stutter
-          if (now - lastStateUpdateTimeRef.current > 55 || Math.abs(rot.velY) < 0.015) {
+          if (now - lastStateUpdateTimeRef.current > 55 || Math.abs(vel.velY) < 0.015) {
             lastStateUpdateTimeRef.current = now;
             selectedTechIdRef.current = frontCenterNode.item.id;
             setSelectedTech(frontCenterNode.item);
@@ -598,12 +684,10 @@ export default function MobileSphereTechStack() {
       hasMoved: false,
     };
     historyRef.current = [{ x: clientX, y: clientY, time: Date.now() }];
-    targetAngleYRef.current = null;
-    targetAngleXRef.current = null; // User takes immediate manual control
+    targetNodeIndexRef.current = null; // User takes immediate manual control
 
-    const rot = rotationRef.current;
-    rot.velX = 0;
-    rot.velY = 0;
+    velRef.current.velX = 0;
+    velRef.current.velY = 0;
     setIsInteracting(true);
   }, []);
 
@@ -627,16 +711,14 @@ export default function MobileSphereTechStack() {
       historyRef.current.shift();
     }
 
-    const rot = rotationRef.current;
-    // Fluid, highly responsive drag sensitivity (allows dragging freely from one side to another)
-    const sensitivityX = 0.0095;
-    const sensitivityY = 0.0095;
+    // Infinite Google Earth 3D trackball rotation:
+    // Dragging right spins around screen Y; dragging down rolls top toward camera around screen X
+    const sensitivity = 0.0065;
+    const ax = -deltaY * sensitivity; // Pitch
+    const ay = deltaX * sensitivity;  // Yaw
 
-    rot.angleY += deltaX * sensitivityX;
-    rot.angleX += -deltaY * sensitivityY;
-
-    // Full vertical range so poles can be inspected at the center equator without inversion
-    rot.angleX = Math.max(-1.50, Math.min(1.50, rot.angleX));
+    const deltaRot = getDeltaRotation(ax, ay);
+    matrixRef.current = multiply3x3(deltaRot, matrixRef.current);
 
     state.lastX = clientX;
     state.lastY = clientY;
@@ -672,17 +754,15 @@ export default function MobileSphereTechStack() {
       }
     }
 
-    const rot = rotationRef.current;
-
     if (state.hasMoved) {
       // Transfer drag velocity to rotational inertia
-      const flickFactor = 0.012;
+      const flickFactor = 0.007;
       const computedVelY = releaseVx * flickFactor;
       const computedVelX = -releaseVy * flickFactor;
 
       // Clamp velocity to a comfortable premium range
-      rot.velY = Math.max(-0.08, Math.min(0.08, computedVelY));
-      rot.velX = Math.max(-0.05, Math.min(0.05, computedVelX));
+      velRef.current.velY = Math.max(-0.06, Math.min(0.06, computedVelY));
+      velRef.current.velX = Math.max(-0.06, Math.min(0.06, computedVelX));
     } else {
       // Tap detection to select / center node
       if (touchDuration < 350 && canvasRef.current) {
@@ -795,7 +875,7 @@ export default function MobileSphereTechStack() {
           </div>
           <button
             onClick={handleResetView}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-muted-text text-[10px] font-mono hover:text-white transition-colors active:scale-95"
+            className="flex items-center gap-1.5 px-3 py-1 rounded-[6px_2px_6px_2px] bg-[#141820] border border-white/10 text-muted-text text-[10px] font-mono hover:text-white transition-colors active:scale-95"
             aria-label="Reset 3D constellation orientation"
           >
             <RotateCcw className="w-3 h-3" />
@@ -804,18 +884,18 @@ export default function MobileSphereTechStack() {
         </div>
 
         {/* Legend Indicators */}
-        <div className="flex items-center justify-between px-2 pt-1 border-t border-white/5">
+        <div className="flex items-center justify-between px-2 pt-1 border-t border-white/10">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#4E85BF] shadow-[0_0_6px_#4E85BF]" />
+              <span className="w-2 h-2 rounded-[2px] bg-[#3E78B2]" />
               <span className="font-mono text-[9px] text-muted-text uppercase">Core</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#10B981] shadow-[0_0_6px_#10B981]" />
+              <span className="w-2 h-2 rounded-[2px] bg-[#10B981]" />
               <span className="font-mono text-[9px] text-muted-text uppercase">Data</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-yellow-500 shadow-[0_0_6px_#EAB308]" />
+              <span className="w-2 h-2 rounded-[2px] bg-amber-500" />
               <span className="font-mono text-[9px] text-muted-text uppercase">Learning</span>
             </div>
           </div>
@@ -838,46 +918,38 @@ export default function MobileSphereTechStack() {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
         style={{ touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none' }}
-        className="relative w-full aspect-square max-w-[360px] my-1 flex items-center justify-center select-none touch-none cursor-grab active:cursor-grabbing"
+        className="relative w-full aspect-square max-w-[420px] my-1 flex items-center justify-center select-none touch-none cursor-grab active:cursor-grabbing"
       >
         <canvas
           ref={canvasRef}
           className="w-full h-full block pointer-events-none"
         />
 
-        {/* Subtle Guidance Overlay on first interaction */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 pointer-events-none px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[9px] font-mono text-muted-text/90 whitespace-nowrap select-none">
-          Drag freely • Auto-centers into focus
+        {/* Guidance Overlay */}
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 pointer-events-none px-3 py-1 rounded-[6px_2px_6px_2px] bg-[#0E1218]/90 border border-white/10 text-[9px] font-mono text-muted-text/90 whitespace-nowrap select-none">
+          Infinite 3D Trackball • Drag in any direction
         </div>
       </div>
 
-      {/* 3. Bottom Attached Detail Card (Direct homage to saasocalypse bottom card) */}
+      {/* 3. Bottom Attached Detail Card */}
       <div className="w-full mt-2 select-none">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: 'easeOut' }}
-          className="w-full p-5 rounded-3xl bg-[#111111]/95 border backdrop-blur-xl shadow-2xl text-left relative overflow-hidden transition-[border-color,box-shadow] duration-300 select-none"
+          className="w-full p-5 rounded-[18px_4px_18px_4px] bg-[#11141B] border border-white/10 shadow-xl text-left relative overflow-hidden transition-[border-color] duration-300 select-none"
           style={{
-            borderColor: `${selectedTech.accentHex}33`,
-            boxShadow: `0 10px 30px -10px rgba(0,0,0,0.8), 0 0 20px -6px ${selectedTech.accentHex}22`,
+            borderColor: `${selectedTech.accentHex}40`,
             userSelect: 'none',
             WebkitUserSelect: 'none',
           }}
         >
-          {/* Top glowing ambient accent stripe */}
+          {/* Top accent stripe */}
           <div
             className="absolute top-0 left-0 right-0 h-[2px] transition-all duration-300"
             style={{
               backgroundColor: selectedTech.accentHex,
-              boxShadow: `0 0 10px ${selectedTech.accentHex}`
             }}
-          />
-
-          {/* Ambient soft glow in corner matching skill accent */}
-          <div
-            className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl pointer-events-none transition-colors duration-500 opacity-20"
-            style={{ backgroundColor: selectedTech.accentHex }}
           />
 
           {/* Header: Title and Badges */}
@@ -885,10 +957,9 @@ export default function MobileSphereTechStack() {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span
-                  className="w-2 h-2 rounded-full transition-all duration-300 shrink-0"
+                  className="w-2 h-2 rounded-[2px] transition-all duration-300 shrink-0"
                   style={{
                     backgroundColor: selectedTech.accentHex,
-                    boxShadow: `0 0 6px ${selectedTech.accentHex}`
                   }}
                 />
                 <span className="font-mono text-[9px] uppercase tracking-widest text-muted-text font-bold">
@@ -901,7 +972,7 @@ export default function MobileSphereTechStack() {
             </div>
 
             <div className="flex flex-col items-end gap-1.5 shrink-0">
-              <span className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 font-mono text-[10px] font-bold text-[#F5F5F5]">
+              <span className="px-2.5 py-1 rounded-[6px_2px_6px_2px] bg-[#161B24] border border-white/10 font-mono text-[10px] font-bold text-[#F5F5F5]">
                 {selectedTech.experience}
               </span>
               <span
@@ -919,10 +990,10 @@ export default function MobileSphereTechStack() {
           </p>
 
           {/* Bottom Meta & Action Controls */}
-          <div className="flex items-center justify-between gap-3 pt-3 border-t border-white/5 relative z-10">
+          <div className="flex items-center justify-between gap-3 pt-3 border-t border-white/10 relative z-10">
             {selectedTech.relatedProject ? (
               <div className="flex items-center gap-1.5 text-[10px] font-mono text-[#89AACC]">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981] shrink-0" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <span className="truncate max-w-[170px]">
                   Shipped in <strong>{selectedTech.relatedProject.name}</strong>
                 </span>
@@ -938,14 +1009,14 @@ export default function MobileSphereTechStack() {
               <button
                 onClick={() => handleStepTech(-1)}
                 aria-label="Previous skill"
-                className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-muted-text text-[11px] font-mono hover:text-white active:scale-90 transition-transform"
+                className="px-2.5 py-1 rounded-[6px_2px_6px_2px] bg-[#161B24] border border-white/10 text-muted-text text-[11px] font-mono hover:text-white active:scale-90 transition-transform"
               >
                 PREV
               </button>
               <button
                 onClick={() => handleStepTech(1)}
                 aria-label="Next skill"
-                className="px-2.5 py-1 rounded-lg border text-[11px] font-mono font-bold hover:text-white active:scale-90 transition-all"
+                className="px-2.5 py-1 rounded-[6px_2px_6px_2px] border text-[11px] font-mono font-bold hover:text-white active:scale-90 transition-all"
                 style={{
                   backgroundColor: `${selectedTech.accentHex}20`,
                   borderColor: `${selectedTech.accentHex}60`,

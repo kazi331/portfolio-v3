@@ -151,8 +151,8 @@ export default function Navbar() {
       id="navbar"
       className={`fixed z-50 left-1/2 -translate-x-1/2 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden ${
         isScrolled
-          ? 'top-5 sm:top-6 w-[92%] max-w-3xl rounded-[28px] border border-white/10 glass-nav shadow-2xl'
-          : 'top-0 w-full max-w-full rounded-none border-b border-white/10 border-t-0 border-x-0 bg-[#090909]/80 backdrop-blur-md shadow-none'
+          ? 'top-4 sm:top-5 w-[92%] max-w-3xl rounded-[18px_4px_18px_4px] border border-white/10 glass-nav shadow-2xl'
+          : 'top-0 w-full max-w-full rounded-none border-b border-white/10 border-t-0 border-x-0 bg-[#0A0C0F]/90 backdrop-blur-md shadow-none'
       }`}
     >
       {/* Top Header Bar */}
@@ -166,7 +166,7 @@ export default function Navbar() {
         {/* Left Brand Logo */}
         <div
           id="navbar-logo"
-          className="flex items-center gap-2 cursor-pointer shrink-0"
+          className="flex items-center gap-2.5 cursor-pointer shrink-0"
           onClick={() => {
             if (pathname !== '/') {
               triggerRouteTransition('/');
@@ -176,8 +176,8 @@ export default function Navbar() {
             }
           }}
         >
-          <div className="w-2.5 h-2.5 bg-[#4E85BF] rounded-full" />
-          <span className="font-bold tracking-tighter text-xs sm:text-sm text-[#F5F5F5]">KS.01</span>
+          <div className="w-2.5 h-2.5 bg-accent rounded-[3px_1px_3px_1px]" />
+          <span className="font-mono font-bold tracking-tight text-xs sm:text-sm text-primary-text">KS.01</span>
         </div>
 
         <div className={`h-4 w-[1px] bg-white/10 ${isScrolled ? 'hidden lg:block' : 'hidden'}`} />
@@ -195,8 +195,8 @@ export default function Navbar() {
               <li
                 key={item.id}
                 onClick={() => handleScrollTo(item)}
-                className={`cursor-pointer transition-colors duration-300 ${
-                  isSelected ? 'text-[#4E85BF]' : 'text-[#F5F5F5]/70 hover:text-[#F5F5F5]'
+                className={`cursor-pointer transition-colors duration-200 ${
+                  isSelected ? 'text-accent' : 'text-muted-text hover:text-primary-text'
                 }`}
               >
                 {item.label}
@@ -212,7 +212,7 @@ export default function Navbar() {
           <Link
             href="/contact"
             id="navbar-resume-btn"
-            className="text-[9px] sm:text-[10px] font-mono font-bold bg-[#F5F5F5] text-black px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full uppercase tracking-widest hover:bg-[#F5F5F5]/90 transition-all cursor-pointer shadow-sm"
+            className="text-[10px] font-mono font-semibold bg-[#F1F3F5] text-[#0A0C0F] px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-[8px_2px_8px_2px] uppercase tracking-wider hover:bg-white transition-all cursor-pointer shadow-sm active:translate-y-[1px]"
           >
             Contact
           </Link>
@@ -221,10 +221,10 @@ export default function Navbar() {
           <button
             id="navbar-toggle-btn"
             onClick={() => setIsOpen(!isOpen)}
-            className="sm:hidden text-[#F5F5F5] p-1.5 rounded-full hover:bg-white/5 transition-all cursor-pointer focus:outline-none"
+            className="sm:hidden text-primary-text p-1.5 rounded-[6px_2px_6px_2px] hover:bg-white/5 transition-all cursor-pointer focus:outline-none"
             aria-label="Toggle menu"
           >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
@@ -238,7 +238,7 @@ export default function Navbar() {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="sm:hidden overflow-hidden border-t border-white/10 bg-[#121212f0] backdrop-blur-xl"
+            className="sm:hidden overflow-hidden border-t border-white/10 bg-[#101318]/95 backdrop-blur-xl"
           >
             <motion.div
               initial={{ y: -8 }}
@@ -260,10 +260,10 @@ export default function Navbar() {
                     id={`mobile-nav-${item.id}`}
                     type="button"
                     onClick={() => handleScrollTo(item)}
-                    className={`w-full text-left font-mono font-bold uppercase tracking-wider text-sm py-2.5 px-3.5 rounded-xl transition-all ${
+                    className={`w-full text-left font-mono font-semibold uppercase tracking-wider text-xs py-2.5 px-3.5 rounded-[8px_2px_8px_2px] transition-all ${
                       isSelected
-                        ? 'text-[#4E85BF] bg-white/5 border-l-2 border-[#4E85BF]'
-                        : 'text-muted-text hover:text-[#F5F5F5] hover:bg-white/3'
+                        ? 'text-accent bg-accent/10 border-l-2 border-accent'
+                        : 'text-muted-text hover:text-primary-text hover:bg-white/5'
                     }`}
                   >
                     {item.label}

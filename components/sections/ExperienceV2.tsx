@@ -120,17 +120,17 @@ export default function ExperienceV2() {
   const activePercent = progressMap[activeStep];
 
   return (
-    <Section id="experience" className="bg-[#090909] border-b border-white/5 relative py-20 overflow-hidden">
-      {/* Subtle radial space nebula background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(16,185,129,0.03),transparent_70%)] pointer-events-none" />
+    <Section id="experience" className="bg-[#0A0C0F] border-b border-white/10 relative py-20 overflow-hidden">
+      {/* Technical CAD line grid */}
+      <div className="absolute inset-0 tech-grid opacity-50 pointer-events-none z-0" />
 
-      <Container>
+      <Container className="relative z-10">
 
         {/* Header Block matching mockup layout */}
         <div className="max-w-6xl mx-auto mb-14 text-left">
           <div className="flex items-center gap-2.5 mb-3">
-            <div className="w-6 h-[1.5px] bg-[#10B981]" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#10B981] font-bold">
+            <div className="w-5 h-[2px] bg-accent" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-accent font-semibold">
               THE ASCENT
             </span>
           </div>
@@ -141,26 +141,20 @@ export default function ExperienceV2() {
             A climb through roles — each waypoint a step toward greater ownership, leadership, and shipping production software end-to-end.
           </p>
 
-          {/* Interactive Monospace Years Row: 202320242025Now */}
-          <div className="flex items-center gap-0 font-mono text-[11px] font-bold tracking-tight select-none border-b border-white/5 pb-2 inline-flex">
+          {/* Interactive Monospace Years Row: 2023 2024 2025 Now */}
+          <div className="flex items-center gap-1 font-mono text-[11px] font-semibold tracking-tight select-none border-b border-white/10 pb-2 inline-flex">
             {journeySteps.map((step, idx) => {
               const isActive = activeStep === idx;
               return (
                 <button
                   key={idx}
                   onClick={() => setActiveStep(idx)}
-                  className={`transition-all duration-300 px-1 py-1 cursor-pointer focus:outline-none relative ${isActive
-                    ? 'text-[#10B981] scale-110 tracking-widest'
-                    : 'text-muted-text/55 hover:text-white'
+                  className={`transition-all duration-200 px-2.5 py-1 rounded-[6px_2px_6px_2px] cursor-pointer focus:outline-none relative ${isActive
+                    ? 'text-accent bg-accent/15 border border-accent/30 font-bold'
+                    : 'text-muted-text/70 hover:text-white hover:bg-white/5'
                     }`}
                 >
                   {step.yearLabel}
-                  {isActive && (
-                    <motion.span
-                      layoutId="activeYearUnderline"
-                      className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#10B981]"
-                    />
-                  )}
                 </button>
               );
             })}
@@ -168,7 +162,7 @@ export default function ExperienceV2() {
         </div>
 
         {/* Desktop Waypoints Canvas Board */}
-        <div className="hidden lg:block relative w-full h-[640px] bg-[#0d0d0d]/40 border border-white/5 rounded-[40px]  overflow-hidden">
+        <div className="hidden lg:block relative w-full h-[640px] bg-[#0E1218] border border-white/10 rounded-[24px_6px_24px_6px] overflow-hidden shadow-2xl">
 
           {/* Constellation lines and tracks */}
           <svg
@@ -179,12 +173,12 @@ export default function ExperienceV2() {
           >
             <defs>
               <linearGradient id="curveGradient" x1="0%" y1="100%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#4E85BF" stopOpacity="0.2" />
-                <stop offset="50%" stopColor="#89AACC" stopOpacity="0.25" />
+                <stop offset="0%" stopColor="#3E78B2" stopOpacity="0.2" />
+                <stop offset="50%" stopColor="#7FA3C7" stopOpacity="0.25" />
                 <stop offset="100%" stopColor="#10B981" stopOpacity="0.3" />
               </linearGradient>
               <linearGradient id="activeTrack" x1="0%" y1="100%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#4E85BF" stopOpacity="0.8" />
+                <stop offset="0%" stopColor="#3E78B2" stopOpacity="0.8" />
                 <stop offset="100%" stopColor="#10B981" stopOpacity="0.9" />
               </linearGradient>
             </defs>
@@ -218,7 +212,6 @@ export default function ExperienceV2() {
           <div className="absolute inset-0 z-10">
             {journeySteps.map((step, idx) => {
               const isActive = activeStep === idx;
-              const isPast = idx < activeStep;
 
               return (
                 <React.Fragment key={idx}>
@@ -236,20 +229,20 @@ export default function ExperienceV2() {
                     <div
                       style={{ borderColor: step.color }}
                       className={`absolute -inset-4 rounded-full border transition-all duration-500 ${isActive
-                        ? 'scale-125 opacity-100 animate-pulse border-2'
+                        ? 'scale-125 opacity-100 border-2'
                         : 'scale-75 opacity-0 group-hover:opacity-45 group-hover:scale-100'
                         }`}
                     />
 
                     {/* Concentric rings for lead green dot */}
                     {step.isCurrent && isActive && (
-                      <div className="absolute -inset-6 rounded-full border border-[#10B981]/25 animate-ping pointer-events-none" />
+                      <div className="absolute -inset-6 rounded-full border border-emerald-400/25 animate-ping pointer-events-none" />
                     )}
 
                     {/* Core node dot */}
                     <div
                       style={{ backgroundColor: step.color }}
-                      className={`w-4 h-4 rounded-full border-2 border-[#090909] shadow-lg shadow-black/80 transition-all duration-300 ${isActive ? 'scale-130' : 'scale-100 hover:scale-115'
+                      className={`w-4 h-4 rounded-[4px_1px_4px_1px] border-2 border-[#0A0C0F] shadow-lg shadow-black/80 transition-all duration-200 ${isActive ? 'scale-125' : 'scale-100 hover:scale-110'
                         }`}
                     />
                   </div>
@@ -267,18 +260,18 @@ export default function ExperienceV2() {
                       top: `${step.cardY}%`,
                       transform: 'translate(-50%, -50%)',
                     }}
-                    className={`absolute w-[290px] p-5 rounded-2xl border transition-all duration-300 text-left cursor-pointer ${isActive
-                      ? 'bg-[#121212] border-white/10 shadow-2xl shadow-black/90 scale-102 ring-1 ring-white/5 z-[11]'
-                      : 'bg-[#121212]/50 border-white/5 hover:border-white/10 opacity-60 hover:opacity-90'
+                    className={`absolute w-[290px] p-5 rounded-[18px_4px_18px_4px] border transition-all duration-200 text-left cursor-pointer ${isActive
+                      ? 'bg-[#11141B] border-accent/50 shadow-2xl shadow-black/90 scale-102 ring-1 ring-accent/20 z-[11]'
+                      : 'bg-[#11141B]/70 border-white/10 hover:border-white/20 opacity-70 hover:opacity-95'
                       }`}
                   >
                     {/* Card Header */}
-                    <div className="flex items-center justify-between gap-2 border-b border-white/5 pb-2.5">
-                      <span className="font-mono text-[10px] text-[#4E85BF] font-bold uppercase tracking-wider">
+                    <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+                      <span className="font-mono text-[10px] text-accent font-bold uppercase tracking-wider">
                         {step.company}
                       </span>
                       {step.isCurrent ? (
-                        <span className="font-mono text-[9px] bg-[#10B981]/10 border border-[#10B981]/20 px-2.5 py-0.5 rounded-full text-[#10B981] font-bold">
+                        <span className="font-mono text-[9px] bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-[6px_2px_6px_2px] text-emerald-400 font-bold">
                           Now
                         </span>
                       ) : (
@@ -297,7 +290,7 @@ export default function ExperienceV2() {
                     <div className="mt-4 space-y-3">
                       {step.highlights.map((h, hIdx) => (
                         <div key={hIdx} className="flex items-start gap-2.5 text-[11px] text-muted-text leading-relaxed">
-                          <span className="mt-0.5 text-[#10B981] shrink-0">
+                          <span className="mt-0.5 text-emerald-400 shrink-0">
                             {h.icon}
                           </span>
                           <span>{h.text}</span>
@@ -310,19 +303,16 @@ export default function ExperienceV2() {
             })}
           </div>
 
-          {/* Bottom Journey Navigation Bar matching mockup */}
-          <div className="absolute bottom-10 left-10 right-10 flex items-center justify-between z-20 font-mono text-[11px]">
-            {/* <div className="flex items-center gap-2 text-muted-text/80">
-              <span>Scroll or click to advance the journey</span>
-              </div> */}
-            <span></span>
+          {/* Bottom Journey Navigation Bar */}
+          <div className="absolute bottom-8 left-8 right-8 flex items-center justify-between z-20 font-mono text-[11px]">
+            <span className="text-muted-text text-[10px]">Select year to inspect waypoint</span>
 
             {/* Ascent status progress bar */}
             <div className="flex items-center gap-4 w-64">
-              <Navigation className="w-3.5 h-3.5 text-[#10B981] rotate-45 animate-bounce" />
-              <div className="h-[3px] bg-white/5 rounded-full flex-1 overflow-hidden">
+              <Navigation className="w-3.5 h-3.5 text-emerald-400 rotate-45" />
+              <div className="h-[3px] bg-white/10 rounded-sm flex-1 overflow-hidden">
                 <motion.div
-                  className="h-full bg-[#10B981]"
+                  className="h-full bg-accent"
                   initial={{ width: '0%' }}
                   animate={{ width: `${activePercent}%` }}
                   transition={{ duration: 0.6 }}
@@ -337,28 +327,28 @@ export default function ExperienceV2() {
         </div>
 
         {/* Responsive Mobile/Tablet Layout (Tidily stacked & scrollable) */}
-        <div className="lg:hidden space-y-6 max-w-xl mx-auto">
+        <div className="lg:hidden space-y-5 max-w-xl mx-auto">
           {journeySteps.map((step, idx) => {
             const isActive = activeStep === idx;
             return (
               <div
                 key={idx}
                 onClick={() => setActiveStep(idx)}
-                className={`p-6 rounded-2xl border transition-all duration-150 text-left relative cursor-pointer ${isActive
-                  ? 'bg-[#121212] border-[#10B981]/40 shadow-xl border-l-4'
-                  : 'bg-[#121212]/50 border-white/5 opacity-80'
+                className={`p-6 rounded-[18px_4px_18px_4px] border transition-all duration-200 text-left relative cursor-pointer ${isActive
+                  ? 'bg-[#11141B] border-accent/50 shadow-xl'
+                  : 'bg-[#11141B]/70 border-white/10 opacity-85'
                   }`}
               >
                 {/* Meta details */}
-                <div className="flex items-center justify-between gap-2 border-b border-white/5 pb-3">
+                <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-3">
                   <div className="flex items-center gap-2">
-                    <span className={`w-2 h-2 rounded-full ${isActive ? 'bg-[#10B981] animate-pulse' : 'bg-white/20'}`} />
-                    <span className="font-mono text-xs text-[#4E85BF] font-bold uppercase tracking-wider">
+                    <span className={`w-2 h-2 rounded-[2px] ${isActive ? 'bg-accent' : 'bg-white/20'}`} />
+                    <span className="font-mono text-xs text-accent font-bold uppercase tracking-wider">
                       {step.company}
                     </span>
                   </div>
                   {step.isCurrent ? (
-                    <span className="font-mono text-[10px] bg-[#10B981]/15 border border-[#10B981]/30 px-2.5 py-0.5 rounded-full text-[#10B981] font-bold">
+                    <span className="font-mono text-[10px] bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-[6px_2px_6px_2px] text-emerald-400 font-bold">
                       Now
                     </span>
                   ) : (
@@ -377,18 +367,13 @@ export default function ExperienceV2() {
                 <div className="mt-4 space-y-3">
                   {step.highlights.map((h, hIdx) => (
                     <div key={hIdx} className="flex items-start gap-2.5 text-[12px] text-muted-text leading-relaxed">
-                      <span className="mt-0.5 text-[#10B981] shrink-0">
+                      <span className="mt-0.5 text-emerald-400 shrink-0">
                         {h.icon}
                       </span>
                       <span>{h.text}</span>
                     </div>
                   ))}
                 </div>
-
-                {/* Active Indicator line */}
-                {/* {isActive && (
-                  <div className="absolute top-0 bottom-0 left-0 w-1 bg-[#10B981] rounded-l-2xl" />
-                )} */}
               </div>
             );
           })}
@@ -396,7 +381,7 @@ export default function ExperienceV2() {
           {/* Mobile indicator row */}
           <div className="flex items-center justify-between pt-4 font-mono text-[11px] text-muted-text/80 px-2">
             <div className="flex items-center gap-2">
-              <Navigation className="w-3.5 h-3.5 text-[#10B981] rotate-45" />
+              <Navigation className="w-3.5 h-3.5 text-emerald-400 rotate-45" />
               <span>Tap a card to inspect waypoint</span>
             </div>
             <div className="font-bold text-[#F5F5F5]">

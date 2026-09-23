@@ -6,14 +6,12 @@ import { personalInfo } from '@/lib/data';
 
 export default function Footer() {
   return (
-    <footer id="footer" className="border-t border-white/5 bg-[#090909] py-12 relative overflow-hidden">
-      <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-[radial-gradient(circle,rgba(78,133,191,0.06)_0%,transparent_70%)] pointer-events-none" />
-
+    <footer id="footer" className="border-t border-white/10 bg-[#080A0D] py-12 relative overflow-hidden">
       <Container>
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-muted-text font-mono">
           <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 bg-[#4E85BF] rounded-full animate-pulse" />
-            <span>KAZI SHARIFUL ISLAM // PORTFOLIO MMXXVI // SYSTEM_ONLINE</span>
+            <div className="w-1.5 h-1.5 bg-accent rounded-[2px]" />
+            <span>KAZI SHARIFUL ISLAM // PORTFOLIO MMXXVI // ARCHITECTURAL_SYSTEM</span>
           </div>
 
           <div className="flex items-center gap-8 text-[11px] font-medium tracking-widest uppercase">

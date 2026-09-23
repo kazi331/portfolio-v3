@@ -25,7 +25,7 @@ export default function SocialButton({ platform, url, iconName, className }: Soc
       whileHover={{ scale: 1.08, y: -2 }}
       whileTap={{ scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-      className={`p-3 rounded-full bg-surface border border-white/5 text-muted-text hover:text-accent hover:border-accent/40 transition-colors duration-300 flex items-center justify-center cursor-pointer ${className}`}
+      className={`p-2.5 rounded-[10px_2px_10px_2px] bg-[#141820] border border-white/10 text-muted-text hover:text-primary-text hover:border-accent/50 hover:bg-[#1A202A] transition-all duration-200 flex items-center justify-center cursor-pointer ${className}`}
     >
       <IconComponent className="w-5 h-5" />
     </motion.a>

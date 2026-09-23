@@ -33,7 +33,7 @@ export default function ProjectCard({ project, index, onSelect }: ProjectCardPro
       }}
       role="button"
       tabIndex={0}
-      className="group relative w-full min-h-[380px] sm:min-h-[420px] rounded-[28px] sm:rounded-[36px] overflow-hidden border border-white/10 hover:border-accent/40 shadow-2xl transition-[border-color,box-shadow] duration-500 cursor-pointer flex flex-col justify-between p-6 sm:p-8 select-none focus:outline-none focus:ring-2 focus:ring-accent/50"
+      className="group relative w-full min-h-[380px] sm:min-h-[420px] rounded-[24px_5px_24px_5px] overflow-hidden border border-white/10 hover:border-accent/60 shadow-2xl transition-[border-color,box-shadow] duration-300 cursor-pointer flex flex-col justify-between p-6 sm:p-8 select-none focus:outline-none focus:ring-1 focus:ring-accent"
     >
       {/* Background Image with Smooth Zoom Effect on Hover */}
       {project.image ? (
@@ -46,57 +46,55 @@ export default function ProjectCard({ project, index, onSelect }: ProjectCardPro
           referrerPolicy="no-referrer"
         />
       ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-[#121212] via-[#1a2333] to-[#090909]" />
+        <div className="absolute inset-0 bg-[#12161F]" />
       )}
 
       {/* Atmospheric Multi-Layer Dark Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/25 pointer-events-none transition-opacity duration-300 group-hover:opacity-90 z-0" />
-      <div className="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0C0F] via-[#0A0C0F]/65 to-[#0A0C0F]/30 pointer-events-none transition-opacity duration-300 group-hover:opacity-95 z-0" />
 
       {/* Top Bar: Case Study Index & Interactive Plus Action Button */}
       <div className="relative z-10 flex items-center justify-between w-full">
-        {/* Index Pill */}
+        {/* Index Pill with unique asymmetric corner */}
         <div className="flex items-center gap-2">
-          <span className="px-3.5 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-white/15 text-[10px] font-mono tracking-widest uppercase text-white/80 font-bold">
-            0{index + 1} / CASE STUDY
+          <span className="px-3 py-1 rounded-[8px_2px_8px_2px] bg-[#0E1218]/90 backdrop-blur-md border border-white/15 text-[10px] font-mono tracking-widest uppercase text-white/90 font-semibold">
+            0{index + 1} {'//'} CASE STUDY
           </span>
         </div>
 
-        {/* Top-Right Quick Links and Featured Plus Icon (Hidden initially, staggered reveal on hover) */}
-        <div className="flex items-center gap-2.5">
-          {/* Direct GitHub link - 1st to appear */}
+        {/* Top-Right Quick Links and Action Icon */}
+        <div className="flex items-center gap-2">
+          {/* Direct GitHub link */}
           {project.githubUrl && (
             <a
               href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:bg-black/80 hover:border-white/30 transition-all duration-300 ease-out opacity-0 translate-y-2 scale-90 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:scale-100 group-focus-within:pointer-events-auto delay-0 cursor-pointer shadow-lg"
+              className="w-8 h-8 rounded-[8px_2px_8px_2px] bg-[#0E1218]/90 backdrop-blur-md border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:bg-[#1A202A] hover:border-white/30 transition-all duration-200 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:pointer-events-auto cursor-pointer shadow-md"
               aria-label="GitHub Repository"
             >
               <Github className="w-3.5 h-3.5" />
             </a>
           )}
 
-          {/* Direct Live Demo link - 2nd to appear */}
+          {/* Direct Live Demo link */}
           {project.liveUrl && (
             <a
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/15 flex items-center justify-center text-white/70 hover:text-accent hover:bg-black/80 hover:border-white/30 transition-all duration-300 ease-out opacity-0 translate-y-2 scale-90 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:scale-100 group-focus-within:pointer-events-auto delay-100 cursor-pointer shadow-lg"
+              className="w-8 h-8 rounded-[8px_2px_8px_2px] bg-[#0E1218]/90 backdrop-blur-md border border-white/15 flex items-center justify-center text-white/70 hover:text-accent hover:bg-[#1A202A] hover:border-white/30 transition-all duration-200 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:pointer-events-auto delay-75 cursor-pointer shadow-md"
               aria-label="Live Demo"
             >
               <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
           )}
 
-          {/* Plus Icon - 3rd to appear with glow */}
-          <div className="relative ml-1 transition-all duration-300 ease-out opacity-0 translate-y-2 scale-90 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:scale-100 group-focus-within:pointer-events-auto delay-200">
-            {/* <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#8b5cf6]/70 blur-[5px] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300" /> */}
-            <div className="w-10 h-10 rounded-full bg-white/20 group-hover:bg-white/30 backdrop-blur-md border border-white/25 group-hover:border-white/40 flex items-center justify-center text-white shadow-xl transition-all duration-300 transform group-hover:scale-105 group-hover:rotate-90">
-              <Plus className="w-4 h-4 text-white stroke-[2.5]" />
+          {/* Expand Icon */}
+          <div className="relative ml-0.5 transition-all duration-200 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:pointer-events-auto delay-150">
+            <div className="w-8 h-8 rounded-[8px_2px_8px_2px] bg-white/15 group-hover:bg-white/25 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shadow-md transition-all duration-200 group-hover:rotate-90">
+              <Plus className="w-3.5 h-3.5 text-white stroke-[2]" />
             </div>
           </div>
         </div>
@@ -104,12 +102,12 @@ export default function ProjectCard({ project, index, onSelect }: ProjectCardPro
 
       {/* Bottom Content: Tags, Monumental Title & Quick Impact */}
       <div className="relative z-10 flex flex-col justify-end mt-auto pt-8">
-        {/* Tech Stack Tags Row */}
-        <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3">
+        {/* Tech Stack Tags Row with unique asymmetric chips */}
+        <div className="flex flex-wrap gap-1.5 mb-3">
           {project.tags.map((tag) => (
             <span
               key={tag}
-              className="px-2.5 sm:px-3 py-1 bg-black/60 backdrop-blur-md border border-white/20 hover:border-accent/40 rounded-full text-[10px] font-mono text-white/95 uppercase tracking-wider font-semibold transition-colors"
+              className="px-2.5 py-0.5 bg-[#0E1218]/90 backdrop-blur-md border border-white/15 hover:border-accent/50 rounded-[6px_2px_6px_2px] text-[10px] font-mono text-white/90 tracking-wide font-medium transition-colors"
             >
               {tag}
             </span>
@@ -117,7 +115,7 @@ export default function ProjectCard({ project, index, onSelect }: ProjectCardPro
         </div>
 
         {/* Title */}
-        <h3 className="text-2xl sm:text-3xl font-bold font-display tracking-tight text-white group-hover:text-accent transition-colors duration-300">
+        <h3 className="text-2xl sm:text-3xl font-bold font-display tracking-tight text-white group-hover:text-accent transition-colors duration-200">
           {mainTitle}
           {lastWord && (
             <span className="ml-1.5 font-light text-[#89AACC]">
@@ -129,7 +127,7 @@ export default function ProjectCard({ project, index, onSelect }: ProjectCardPro
         {/* Subtitle / Impact Peek */}
         {project.impact && (
           <div className="mt-2.5 flex items-center gap-2 text-xs font-mono text-white/70 overflow-hidden text-ellipsis whitespace-nowrap">
-            <Sparkles className="w-3 h-3 text-[#4E85BF] shrink-0" />
+            <Sparkles className="w-3 h-3 text-accent shrink-0" />
             <span className="truncate">{project.impact}</span>
           </div>
         )}
