@@ -437,8 +437,10 @@ export default function MobileSphereTechStack() {
       const reticlePulse = (Math.sin(Date.now() * 0.004) + 1) / 2; // 0 to 1
 
       // Subtle 3D astrolabe latitude guide ellipse
+      // Calculate vertical compression based on current rotation (M[1][0] represents tilt around X-axis)
+      const tiltFactor = Math.abs(M[1][0]);
       ctx.beginPath();
-      ctx.ellipse(centerX, centerY, sphereRadius * 0.94, Math.max(4, Math.abs(sphereRadius * 0.94 * sinX)), 0, 0, Math.PI * 2);
+      ctx.ellipse(centerX, centerY, sphereRadius * 0.94, Math.max(4, Math.abs(sphereRadius * 0.94 * tiltFactor)), 0, 0, Math.PI * 2);
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
       ctx.lineWidth = 1;
       ctx.setLineDash([3, 6]);
