@@ -1,7 +1,7 @@
 'use client';
 
 import { Service } from '@/types/portfolio';
-import { CheckCircle2, Cpu, Layout } from 'lucide-react';
+import { CheckCircle2, Cpu, Database, Layout, Sparkles, Terminal } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface ServiceCardProps {
@@ -15,8 +15,13 @@ export default function ServiceCard({ service, index }: ServiceCardProps) {
     switch (name.toLowerCase()) {
       case 'layout':
         return <Layout className="w-5 h-5 text-accent" />;
+      case 'terminal':
+        return <Terminal className="w-5 h-5 text-accent" />;
+      case 'database':
+        return <Database className="w-5 h-5 text-accent" />;
+      case 'sparkles':
+        return <Sparkles className="w-5 h-5 text-accent" />;
       case 'cpu':
-        return <Cpu className="w-5 h-5 text-accent" />;
       default:
         return <Cpu className="w-5 h-5 text-accent" />;
     }
@@ -29,14 +34,14 @@ export default function ServiceCard({ service, index }: ServiceCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      className="p-8 rounded-[32px] bg-[#121212]/90 border border-white/5 flex flex-col justify-between h-full hover:border-accent/30 transition-[border-color,box-shadow] duration-300 shadow-xl group"
+      className="p-8 rounded-[22px_5px_22px_5px] bg-[#11141B] border border-white/10 flex flex-col justify-between h-full hover:border-accent/40 transition-[border-color,box-shadow] duration-300 shadow-xl group"
     >
       <div>
         <div className="flex items-center justify-between mb-6">
-          <div className="p-3 bg-white/3 border border-white/5 rounded-2xl group-hover:bg-accent/10 group-hover:border-accent/20 transition-all duration-300">
+          <div className="p-2.5 bg-[#161B24] border border-white/10 rounded-[10px_2px_10px_2px] group-hover:border-accent/30 transition-all duration-300">
             {getIcon(service.iconName)}
           </div>
-          <span className="text-[9px] font-mono opacity-30 uppercase tracking-widest">
+          <span className="text-[9px] font-mono text-muted-text/60 uppercase tracking-widest">
             SERVICE_NODE_0{index + 1}
           </span>
         </div>

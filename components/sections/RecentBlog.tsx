@@ -13,8 +13,9 @@ export default function RecentBlog() {
   const [featured, supporting] = recent;
 
   return (
-    <Section id="recent-blog" className="bg-[#090909]">
-      <Container>
+    <Section id="recent-blog" className="bg-[#0A0C0F] border-b border-white/10 relative py-20">
+      <div className="absolute inset-0 tech-grid opacity-30 pointer-events-none z-0" />
+      <Container className="relative z-10">
         <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end md:gap-10">
           <SectionHeading
             title="Recent Engineering Articles"

@@ -199,6 +199,7 @@ export default function TechStackV2() {
   const [selectedMobileTech, setSelectedMobileTech] = useState<TechnologyNode | null>(null);
   const [popoverPos, setPopoverPos] = useState({ left: 0, top: 0 });
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
+  const [desktopViewMode, setDesktopViewMode] = useState<'constellation' | 'globe'>('constellation');
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -234,15 +235,11 @@ export default function TechStackV2() {
   );
 
   return (
-    <Section id="tech-stack" className="bg-[#090909] border-b border-white/5 relative py-20 overflow-hidden">
+    <Section id="tech-stack" className="bg-[#0A0C0F] border-b border-white/10 relative py-20 overflow-hidden">
       <div id="stack" className="absolute top-0 left-0 pointer-events-none" />
-      {/* Space Constellation Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(17,24,39,0.5),rgba(9,9,9,1))] z-0" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff02_1px,transparent_1px),linear-gradient(to_bottom,#ffffff02_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none z-0" />
-
-      {/* Nebula Ambient Glows - zero-blur radial gradients for maximum mobile GPU speed */}
-      <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(78,133,191,0.06)_0%,transparent_70%)] pointer-events-none z-0" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(16,185,129,0.06)_0%,transparent_70%)] pointer-events-none z-0" />
+      
+      {/* Technical CAD line grid */}
+      <div className="absolute inset-0 tech-grid opacity-60 pointer-events-none z-0" />
 
       <Container className="relative z-10">
 
@@ -250,9 +247,9 @@ export default function TechStackV2() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 max-w-6xl mx-auto mb-6 md:mb-8">
           <div className="space-y-3 text-left">
             <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 bg-[#10B981] rounded-full" />
-              <span className="font-mono text-xs uppercase tracking-[0.2em] text-[#89AACC] font-bold">
-                SKILLS
+              <span className="w-2 h-2 bg-accent rounded-[2px]" />
+              <span className="font-mono text-xs uppercase tracking-[0.2em] text-[#89AACC] font-semibold">
+                SKILLS & ARCHITECTURE
               </span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold font-display tracking-tight text-[#F5F5F5]">
@@ -266,27 +263,53 @@ export default function TechStackV2() {
             </p>
           </div>
 
-          {/* Sparkle Badge at Top Right */}
-          <div className="hidden md:flex items-center gap-2.5 px-4 py-2 bg-white/3 border border-white/5 rounded-full self-start md:self-auto shadow-xl">
-            <Sparkles className="w-4 h-4 text-accent animate-pulse" />
-            <span className="font-mono text-xs font-bold text-[#F5F5F5]">
-              16 technologies mapped
-            </span>
+          {/* Controls at Top Right */}
+          <div className="hidden md:flex items-center gap-3 self-start md:self-auto">
+            {/* View Switcher: 2D Constellation vs 3D Orbital Globe */}
+            {/* <div className="flex items-center p-1 bg-[#141820] border border-white/10 rounded-[8px_2px_8px_2px]">
+              <button
+                onClick={() => setDesktopViewMode('constellation')}
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-[6px_2px_6px_2px] font-mono text-[10px] uppercase tracking-wider transition-all cursor-pointer ${
+                  desktopViewMode === 'constellation'
+                    ? 'bg-accent/20 text-accent border border-accent/40 font-semibold'
+                    : 'text-muted-text hover:text-white'
+                }`}
+              >
+                <span>2D Map</span>
+              </button>
+              <button
+                onClick={() => setDesktopViewMode('globe')}
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-[6px_2px_6px_2px] font-mono text-[10px] uppercase tracking-wider transition-all cursor-pointer ${
+                  desktopViewMode === 'globe'
+                    ? 'bg-accent/20 text-accent border border-accent/40 font-semibold'
+                    : 'text-muted-text hover:text-white'
+                }`}
+              >
+                <span>3D Orbital</span>
+              </button>
+            </div> */}
+
+            <div className="flex items-center gap-2.5 px-3.5 py-1.5 bg-[#141820] border border-white/10 rounded-[8px_2px_8px_2px] shadow-md">
+              <Sparkles className="w-3.5 h-3.5 text-accent" />
+              <span className="font-mono text-xs font-semibold text-[#F5F5F5]">
+                16 technologies mapped
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Constellation Canvas Board (Desktop/Tablet) - Only rendered on desktop to avoid running 24 infinite RAF animation loops on mobile */}
-        {isDesktop && (
+        {/* Constellation Canvas Board or 3D Orbital Globe (Desktop/Tablet) */}
+        {isDesktop && desktopViewMode === 'constellation' && (
           <div
             ref={containerRef}
             onMouseMove={handleMouseMove}
-            className="hidden md:flex relative w-full min-h-[560px] md:min-h-[640px] bg-black/20 border border-white/5 rounded-[40px] p-6 backdrop-blur-sm overflow-hidden flex-col"
+            className="hidden md:flex relative w-full min-h-[560px] md:min-h-[640px] bg-[#0E1218] border border-white/10 rounded-[24px_6px_24px_6px] p-6 overflow-hidden flex-col shadow-2xl"
           >
-            {/* Top Controls row: Filter Pills on left, Legend Dots on right (Moved inside at the top) */}
-            <div id="tech-stack-controls" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/5 relative z-20">
+            {/* Top Controls row: Filter Pills on left, Legend Dots on right */}
+            <div id="tech-stack-controls" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/10 relative z-20">
               {/* Filter bar */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="font-mono text-[10px] uppercase text-muted-text/80 tracking-widest font-bold mr-2">
+                <span className="font-mono text-[10px] uppercase text-muted-text/80 tracking-widest font-semibold mr-1">
                   FILTER:
                 </span>
                 {(['all', 'frontend', 'backend', 'database', 'tooling'] as const).map((cat) => {
@@ -295,9 +318,9 @@ export default function TechStackV2() {
                     <button
                       key={cat}
                       onClick={() => setActiveFilter(cat)}
-                      className={`px-4 py-2 rounded-xl text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${isSelected
-                        ? 'bg-[#162a45]/60 text-accent border border-accent/35 shadow-lg'
-                        : 'bg-white/3 border border-white/3 text-muted-text hover:text-[#F5F5F5] hover:bg-white/5'
+                      className={`px-3.5 py-1.5 rounded-[8px_2px_8px_2px] text-[10px] font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer ${isSelected
+                        ? 'bg-accent/15 text-accent border border-accent/40 shadow-sm'
+                        : 'bg-[#141820] border border-white/10 text-muted-text hover:text-[#F5F5F5] hover:bg-[#1A202A]'
                         }`}
                     >
                       {cat}
@@ -309,15 +332,15 @@ export default function TechStackV2() {
               {/* Legend Indicators */}
               <div className="flex items-center gap-5">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#4E85BF]" />
+                  <span className="w-2 h-2 rounded-[2px] bg-[#3E78B2]" />
                   <span className="font-sans text-[11px] text-muted-text font-medium">Core</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#10B981]" />
+                  <span className="w-2 h-2 rounded-[2px] bg-[#10B981]" />
                   <span className="font-sans text-[11px] text-muted-text font-medium">Data</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-yellow-500" />
+                  <span className="w-2 h-2 rounded-[2px] bg-amber-500" />
                   <span className="font-sans text-[11px] text-muted-text font-medium">Learning</span>
                 </div>
               </div>
@@ -390,20 +413,19 @@ export default function TechStackV2() {
                     onMouseEnter={() => setHoveredNode(tech)}
                     onMouseLeave={() => setHoveredNode(null)}
                   >
-                    {/* Glowing backing ring on hover */}
+                    {/* Sharp backing ring on hover */}
                     <AnimatePresence>
                       {isHovered && (
                         <motion.div
                           layoutId="glow-ring"
-                          className="absolute inset-0 rounded-full pointer-events-none filter blur-[15px]"
+                          className="absolute inset-0 rounded-full pointer-events-none border border-accent/40 bg-accent/5"
                           style={{
-                            background: tech.color,
-                            scale: 1.4,
+                            scale: 1.25,
                           }}
                           initial={{ opacity: 0 }}
-                          animate={{ opacity: 0.8 }}
+                          animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
-                          transition={{ duration: 0.25 }}
+                          transition={{ duration: 0.2 }}
                         />
                       )}
                     </AnimatePresence>
@@ -414,17 +436,17 @@ export default function TechStackV2() {
                         width: `${nodeSize}px`,
                         height: `${nodeSize}px`,
                       }}
-                      className={`rounded-full border transition-all duration-300 flex flex-col items-center justify-center text-center ${isHovered
-                        ? 'border-accent bg-[#151515] scale-105 shadow-2xl shadow-accent/10'
+                      className={`rounded-full border transition-all duration-200 flex flex-col items-center justify-center text-center ${isHovered
+                        ? 'border-accent bg-[#161B24] scale-105 shadow-xl'
                         : tech.type === 'core'
-                          ? 'border-[#4E85BF]/25 bg-black/40 hover:border-[#4E85BF]'
+                          ? 'border-[#3E78B2]/30 bg-[#11141B] hover:border-accent'
                           : tech.type === 'data'
-                            ? 'border-[#10B981]/25 bg-black/40 hover:border-[#10B981]'
-                            : 'border-yellow-500/25 bg-black/40 hover:border-yellow-500'
+                            ? 'border-[#10B981]/30 bg-[#11141B] hover:border-[#10B981]'
+                            : 'border-amber-500/30 bg-[#11141B] hover:border-amber-500'
                         }`}
                     >
                       {/* Tiny Icon */}
-                      <div className={`transition-transform duration-300 ${isHovered ? 'scale-110 text-accent' : 'text-muted-text/70'}`}>
+                      <div className={`transition-transform duration-200 ${isHovered ? 'scale-110 text-accent' : 'text-muted-text/70'}`}>
                         {tech.icon}
                       </div>
 
@@ -435,7 +457,7 @@ export default function TechStackV2() {
 
                       {/* Experience Subtext */}
                       {tech.size >= 1.0 && (
-                        <span className="font-mono text-[8px] text-muted-text mt-0.5 uppercase tracking-wider font-bold">
+                        <span className="font-mono text-[8px] text-muted-text mt-0.5 uppercase tracking-wider font-semibold">
                           {tech.experience.split(' ')[0]} yrs
                         </span>
                       )}
@@ -445,7 +467,7 @@ export default function TechStackV2() {
               })}
             </div>
 
-            {/* Absolute High-Fidelity Hover Popup Detail Card (Floating dynamic positioning next to mouse) */}
+            {/* Absolute High-Fidelity Hover Popup Detail Card */}
             <AnimatePresence>
               {hoveredNode && (
                 <motion.div
@@ -458,15 +480,14 @@ export default function TechStackV2() {
                     left: `${popoverPos.left}px`,
                     top: `${popoverPos.top}px`,
                   }}
-                  className="z-30 pointer-events-none w-80 max-w-full bg-[#121212]/95 border border-white/10 rounded-2xl p-5 shadow-2xl backdrop-blur-md"
+                  className="z-30 pointer-events-none w-80 max-w-full bg-[#11141B] border border-white/15 rounded-[18px_4px_18px_4px] p-5 shadow-2xl"
                 >
-                  {/* Category-themed layout matching reference mockup */}
                   <div className="flex items-start gap-4 text-left">
-                    <div className={`p-2.5 rounded-xl border flex items-center justify-center shrink-0 ${hoveredNode.type === 'core'
-                      ? 'bg-[#4E85BF]/10 border-[#4E85BF]/25 text-[#4E85BF]'
+                    <div className={`p-2.5 rounded-[8px_2px_8px_2px] border flex items-center justify-center shrink-0 ${hoveredNode.type === 'core'
+                      ? 'bg-accent/15 border-accent/30 text-accent'
                       : hoveredNode.type === 'data'
-                        ? 'bg-[#10B981]/10 border-[#10B981]/25 text-[#10B981]'
-                        : 'bg-yellow-500/10 border-yellow-500/25 text-yellow-500'
+                        ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
+                        : 'bg-amber-500/15 border-amber-500/30 text-amber-400'
                       }`}>
                       {hoveredNode.icon}
                     </div>
@@ -480,18 +501,27 @@ export default function TechStackV2() {
                     </div>
                   </div>
 
-                  <p className="text-xs text-muted-text mt-3.5 leading-relaxed font-sans border-t border-white/5 pt-3.5 text-left">
+                  <p className="text-xs text-muted-text mt-3.5 leading-relaxed font-sans border-t border-white/10 pt-3.5 text-left">
                     {hoveredNode.description}
                   </p>
 
-                  <div className="flex items-center gap-2 mt-4 text-[9px] font-mono text-muted-text bg-white/3 py-1.5 px-3 rounded-lg border border-white/5 justify-start">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent animate-ping" />
+                  <div className="flex items-center gap-2 mt-4 text-[9px] font-mono text-muted-text bg-[#161B24] py-1.5 px-3 rounded-[6px_2px_6px_2px] border border-white/10 justify-start">
+                    <span className="w-1.5 h-1.5 rounded-[2px] bg-accent" />
                     <span>Domain: <strong className="text-[#F5F5F5] uppercase">{hoveredNode.category}</strong></span>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
 
+          </div>
+        )}
+
+        {/* 3D Orbital Globe (Desktop/Tablet View) */}
+        {isDesktop && desktopViewMode === 'globe' && (
+          <div className="hidden md:flex flex-col items-center justify-center relative w-full min-h-[560px] md:min-h-[640px] bg-[#0E1218] border border-white/10 rounded-[24px_6px_24px_6px] p-8 overflow-hidden shadow-2xl">
+            <div className="w-full max-w-xl flex flex-col items-center">
+              <MobileSphereTechStack />
+            </div>
           </div>
         )}
 

@@ -1,23 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { 
-  ChevronDown, 
-  ArrowRight, 
-  Sparkles, 
-  Layers, 
-  Server, 
-  Database, 
-  ShieldCheck, 
-  Cpu, 
-  Zap, 
-  Code,
-  Network
-} from 'lucide-react';
 import Container from '@/components/shared/Container';
 import Section from '@/components/shared/Section';
-import { personalInfo } from '@/lib/data';
+import {
+  ArrowRight,
+  Cpu,
+  Database,
+  Layers,
+  Network,
+  Server,
+  ShieldCheck,
+  Sparkles
+} from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import React, { useState } from 'react';
 
 interface SystemNode {
   id: string;
@@ -136,15 +132,11 @@ export default function HeroV3({ isLoaded = true }: HeroV3Props) {
   };
 
   return (
-    <Section id="hero" className="min-h-screen flex flex-col justify-center pt-32 pb-20 bg-[#070707] relative overflow-hidden border-b border-white/5">
-      
-      {/* Editorial space mesh background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(16,185,129,0.015),transparent_70%)] pointer-events-none" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff01_1px,transparent_1px),linear-gradient(to_bottom,#ffffff01_1px,transparent_1px)] bg-[size:5rem_5rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_80%,transparent_100%)] pointer-events-none z-0" />
+    <Section id="hero" className="min-h-screen flex flex-col justify-center pt-32 pb-20 bg-[#0A0C0F] relative overflow-hidden border-b border-white/10">
 
-      {/* Atmospheric accent lights - zero-blur radial gradients for maximum mobile GPU speed */}
-      <div className="absolute -top-40 right-10 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(78,133,191,0.06)_0%,transparent_70%)] pointer-events-none z-0" />
-      <div className="absolute -bottom-40 left-10 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(16,185,129,0.06)_0%,transparent_70%)] pointer-events-none z-0" />
+      {/* Crisp technical CAD grid texture */}
+      <div className="absolute inset-0 tech-grid opacity-70 pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A0C0F]/50 to-[#0A0C0F] pointer-events-none z-0" />
 
       <Container className="relative z-10 w-full">
         <motion.div
@@ -155,18 +147,18 @@ export default function HeroV3({ isLoaded = true }: HeroV3Props) {
         >
           {/* Left Column: Monumental Headline Typography */}
           <div className="lg:col-span-6 flex flex-col items-start text-left">
-            
+
             {/* Status Live Tag */}
             <motion.div
               variants={childVariants}
-              className="flex items-center gap-2 px-3 py-1 bg-white/3 border border-white/5 rounded-full mb-6"
+              className="flex items-center gap-2.5 px-3 py-1.5 bg-[#141820] border border-white/10 rounded-[8px_2px_8px_2px] mb-6"
             >
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
               </span>
-              <span className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[#89AACC]">
-                Live Portfolio Engine
+              <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.2em] text-[#89AACC]">
+                System Runtime // Online
               </span>
             </motion.div>
 
@@ -199,15 +191,15 @@ export default function HeroV3({ isLoaded = true }: HeroV3Props) {
               I engineer performant web architectures using Next.js and React paired with robust, modular backend systems in NestJS, Node.js, and Python (FastAPI). Focused on pristine UX, clean API designs, and scalable relational databases.
             </motion.p>
 
-            {/* Tech tag loop */}
+            {/* Tech tag loop with unique asymmetric chips */}
             <motion.div
               variants={childVariants}
-              className="flex flex-wrap gap-2.5 mb-10 max-w-md"
+              className="flex flex-wrap gap-2 mb-10 max-w-md"
             >
               {['Next.js', 'NestJS', 'PostgreSQL', 'TypeScript', 'Prisma ORM', 'FastAPI', 'Redis'].map((tag) => (
-                <span 
+                <span
                   key={tag}
-                  className="px-3 py-1.5 bg-white/3 border border-white/5 hover:border-white/10 rounded-lg font-mono text-[10px] font-bold text-muted-text/90 hover:text-white transition-colors"
+                  className="px-2.5 py-1 bg-[#141820] border border-white/10 hover:border-accent/40 rounded-[6px_2px_6px_2px] font-mono text-[10px] font-medium text-muted-text hover:text-white transition-colors"
                 >
                   {tag}
                 </span>
@@ -217,22 +209,22 @@ export default function HeroV3({ isLoaded = true }: HeroV3Props) {
             {/* Primary Action Buttons */}
             <motion.div
               variants={childVariants}
-              className="flex flex-wrap gap-4 items-center w-full sm:w-auto"
+              className="flex flex-wrap gap-3.5 items-center w-full sm:w-auto"
             >
               <button
                 onClick={handleScrollToProjects}
-                className="px-6 py-3.5 bg-accent text-primary-bg rounded-xl font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-xl shadow-accent/10 hover:shadow-accent/20 hover:bg-accent/90 flex items-center gap-2 group cursor-pointer w-full sm:w-auto justify-center"
+                className="px-5 py-3 bg-[#F1F3F5] text-[#0A0C0F] hover:bg-white border border-[#F1F3F5] rounded-[12px_3px_12px_3px] font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-[0_2px_8px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.8)] flex items-center gap-2 group cursor-pointer w-full sm:w-auto justify-center active:translate-y-[1px]"
               >
-                <span>View My Work</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                <span>View Engineering Work</span>
+                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
               </button>
 
               <a
-                href="#contact"
-                className="px-6 py-3.5 bg-white/3 border border-white/5 hover:border-white/10 text-[#F5F5F5] rounded-xl font-mono text-xs font-bold uppercase tracking-wider transition-all duration-300 backdrop-blur-sm flex items-center gap-2 w-full sm:w-auto justify-center"
+                href="/contact"
+                className="px-5 py-3 bg-[#141820] border border-white/15 hover:border-accent/50 hover:bg-[#1A202A] text-primary-text rounded-[12px_3px_12px_3px] font-mono text-xs font-semibold uppercase tracking-wider transition-all duration-200 flex items-center gap-2 w-full sm:w-auto justify-center active:translate-y-[1px]"
               >
                 <span>Connect</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
+                <span className="w-1.5 h-1.5 rounded-[2px] bg-emerald-400" />
               </a>
             </motion.div>
 
@@ -240,34 +232,33 @@ export default function HeroV3({ isLoaded = true }: HeroV3Props) {
 
           {/* Right Column: High Fidelity Interactive System Blueprint */}
           <div className="lg:col-span-6 relative w-full flex flex-col justify-center">
-            
+
             <motion.div
               variants={childVariants}
-              className="w-full bg-[#0c0c0c]/95 md:bg-[#0c0c0c]/90 border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl relative overflow-hidden backdrop-blur-sm md:backdrop-blur-md"
+              className="w-full bg-[#11141B] border border-white/10 rounded-[24px_6px_24px_6px] p-6 md:p-8 shadow-2xl relative overflow-hidden"
             >
               {/* Header inside Blueprint */}
-              <div className="flex items-center justify-between border-b border-white/5 pb-4 mb-6">
-                <div className="flex items-center gap-2">
-                  <Network className="w-4 h-4 text-accent animate-pulse" />
-                  <span className="font-mono text-[10px] font-extrabold uppercase tracking-widest text-[#F5F5F5]">
-                    System Blueprint Trace
+              <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+                <div className="flex items-center gap-2.5">
+                  <Network className="w-4 h-4 text-accent" />
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#F5F5F5]">
+                    System Architecture Trace
                   </span>
                 </div>
                 <button
                   onClick={() => setSystemTraceActive(!systemTraceActive)}
-                  className={`px-3 py-1 rounded-full font-mono text-[8px] font-extrabold uppercase tracking-wider transition-all border cursor-pointer ${
-                    systemTraceActive 
-                      ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' 
-                      : 'bg-white/3 border-white/5 text-muted-text'
-                  }`}
+                  className={`px-2.5 py-1 rounded-[6px_2px_6px_2px] font-mono text-[8px] font-bold uppercase tracking-wider transition-all border cursor-pointer ${systemTraceActive
+                      ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
+                      : 'bg-[#161B24] border-white/10 text-muted-text'
+                    }`}
                 >
                   {systemTraceActive ? 'Live Trace On' : 'Paused'}
                 </button>
               </div>
 
               {/* Graphical Blueprint Grid */}
-              <div className="relative w-full h-48 bg-black/40 border border-white/5 rounded-2xl p-4 flex items-center justify-between overflow-hidden">
-                
+              <div className="relative w-full h-48 bg-[#0A0C0F] border border-white/10 rounded-[14px_3px_14px_3px] p-4 flex items-center justify-between overflow-hidden">
+
                 {/* SVG Connections */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40" xmlns="http://www.w3.org/2000/svg">
                   {/* Dynamic path trace */}
@@ -278,7 +269,7 @@ export default function HeroV3({ isLoaded = true }: HeroV3Props) {
                     strokeWidth="1"
                     strokeOpacity="0.1"
                   />
-                  
+
                   {systemTraceActive && (
                     <motion.path
                       d="M 40 96 C 100 40, 140 40, 180 96 C 220 150, 260 150, 320 96"
@@ -294,9 +285,9 @@ export default function HeroV3({ isLoaded = true }: HeroV3Props) {
 
                   <defs>
                     <linearGradient id="traceGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#4E85BF" stopOpacity="0" />
+                      <stop offset="0%" stopColor="#3E78B2" stopOpacity="0" />
                       <stop offset="50%" stopColor="#10B981" stopOpacity="1" />
-                      <stop offset="100%" stopColor="#89AACC" stopOpacity="0" />
+                      <stop offset="100%" stopColor="#7FA3C7" stopOpacity="0" />
                     </linearGradient>
                   </defs>
                 </svg>
@@ -308,30 +299,21 @@ export default function HeroV3({ isLoaded = true }: HeroV3Props) {
                     <div
                       key={node.id}
                       onClick={() => setActiveSystemNode(node.id)}
-                      className={`relative flex flex-col items-center justify-center cursor-pointer transition-all duration-300 z-10 ${
-                        isActive ? 'scale-110' : 'opacity-70 hover:opacity-100 hover:scale-105'
-                      }`}
+                      className={`relative flex flex-col items-center justify-center cursor-pointer transition-all duration-200 z-10 ${isActive ? 'scale-105' : 'opacity-70 hover:opacity-100 hover:scale-102'
+                        }`}
                     >
-                      {/* Glow backing */}
-                      {isActive && (
-                        <div 
-                          style={{ backgroundColor: node.color }}
-                          className="absolute w-12 h-12 rounded-full filter blur-[15px] opacity-25 pointer-events-none" 
-                        />
-                      )}
-
                       {/* Icon Container */}
-                      <div 
-                        style={{ 
-                          borderColor: isActive ? node.color : 'rgba(255,255,255,0.1)',
-                          backgroundColor: isActive ? 'rgba(255,255,255,0.03)' : 'transparent'
+                      <div
+                        style={{
+                          borderColor: isActive ? node.color : 'rgba(255,255,255,0.12)',
+                          backgroundColor: isActive ? 'rgba(255,255,255,0.06)' : '#141820'
                         }}
-                        className="w-10 h-10 rounded-xl border flex items-center justify-center text-white mb-2 transition-all duration-300"
+                        className="w-10 h-10 rounded-[8px_2px_8px_2px] border flex items-center justify-center text-white mb-2 transition-all duration-200"
                       >
                         {node.icon}
                       </div>
 
-                      <span className="font-mono text-[9px] text-[#F5F5F5] font-bold">
+                      <span className="font-mono text-[9px] text-[#F5F5F5] font-semibold">
                         {node.id.toUpperCase()}
                       </span>
                     </div>
@@ -341,36 +323,36 @@ export default function HeroV3({ isLoaded = true }: HeroV3Props) {
               </div>
 
               {/* Dynamic Detail Panel explaining the node role */}
-              <div className="mt-6 bg-black/20 border border-white/5 rounded-2xl p-5 text-left min-h-[160px]">
+              <div className="mt-5 bg-[#0A0C0F] border border-white/10 rounded-[14px_3px_14px_3px] p-5 text-left min-h-[160px]">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeSystemNode}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.18 }}
                   >
                     {/* Node Header */}
-                    <div className="flex items-center justify-between mb-3 border-b border-white/5 pb-2.5">
+                    <div className="flex items-center justify-between mb-3 border-b border-white/10 pb-2.5">
                       <div className="flex items-center gap-2">
-                        <span 
+                        <span
                           style={{ backgroundColor: currentActiveNode.color }}
-                          className="w-2 h-2 rounded-full" 
+                          className="w-2 h-2 rounded-[2px]"
                         />
-                        <h4 className="font-sans font-black text-sm text-white">
+                        <h4 className="font-sans font-bold text-sm text-white">
                           {currentActiveNode.label}
                         </h4>
                       </div>
-                      <span className="font-mono text-[9px] text-muted-text uppercase font-bold">
+                      <span className="font-mono text-[9px] text-muted-text uppercase font-semibold">
                         {currentActiveNode.role}
                       </span>
                     </div>
 
                     {/* Node Spec bullet list */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
                       {currentActiveNode.specs.map((spec, sIdx) => (
                         <div key={sIdx} className="flex items-start gap-2 text-[11px] text-muted-text leading-tight">
-                          <ShieldCheck className="w-3.5 h-3.5 text-[#10B981] shrink-0 mt-0.5" />
+                          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                           <span>{spec}</span>
                         </div>
                       ))}
@@ -383,8 +365,8 @@ export default function HeroV3({ isLoaded = true }: HeroV3Props) {
               {/* Blueprint Legend Footer */}
               <div className="mt-4 flex items-center justify-between text-[10px] font-mono text-muted-text/80">
                 <span className="flex items-center gap-1.5">
-                  <Sparkles className="w-3 h-3 text-accent animate-spin-slow" />
-                  <span>Click nodes to trace the stack role</span>
+                  <Sparkles className="w-3 h-3 text-accent" />
+                  <span>Interactive: click nodes to inspect architecture</span>
                 </span>
                 <span>Active: <strong className="text-white uppercase">{activeSystemNode}</strong></span>
               </div>

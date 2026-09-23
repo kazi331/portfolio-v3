@@ -4,8 +4,8 @@ import BlogListingView from '@/components/blog/BlogListingView';
 import { siteConfig } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Engineering Blog & Architectural Logs',
-  description: 'In-depth engineering logs, WebAssembly on the edge, Next.js optimization post-mortems, and software patterns from production systems.',
+  title: 'Full Stack & React Engineering Blog | Node.js, Next.js & Systems Architecture',
+  description: 'Scalable Node.js architectures, Next.js optimization, and FastAPI microservices.',
   alternates: {
     canonical: `${siteConfig.url}/blog`,
   },
@@ -13,22 +13,22 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: `${siteConfig.url}/blog`,
-    title: 'Engineering Blog & Architectural Logs | Kazi Shariful Islam',
-    description: 'In-depth engineering logs, WebAssembly on the edge, Next.js optimization post-mortems, and software patterns from production systems.',
+    title: 'Full Stack & React Engineering Blog | Node.js, Next.js & Systems Architecture',
+    description: 'Scalable Node.js architectures, Next.js optimization, and FastAPI microservices.',
     siteName: siteConfig.name,
     images: [
       {
         url: siteConfig.ogImage,
         width: 1200,
         height: 630,
-        alt: 'Engineering Blog & Architectural Logs | Kazi Shariful Islam',
+        alt: 'Full Stack Engineering Blog — Kazi Shariful Islam',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Engineering Blog & Architectural Logs | Kazi Shariful Islam',
-    description: 'In-depth engineering logs, WebAssembly on the edge, Next.js optimization post-mortems, and software patterns from production systems.',
+    title: 'Full Stack & React Engineering Blog | Node.js, Next.js & Systems Architecture',
+    description: 'Scalable Node.js architectures, Next.js optimization, and FastAPI microservices.',
     creator: siteConfig.twitterHandle,
     site: siteConfig.twitterHandle,
     images: [siteConfig.ogImage],
