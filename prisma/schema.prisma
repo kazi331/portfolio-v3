@@ -1,0 +1,229 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+// Base model with common fields
+model Base {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("base")
+}
+
+// Users table for authentication
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  name      String
+  email     String   @unique
+  phone     String?  @unique @map("phone") @db.VarChar(11)
+  avatar    String?
+
+  posts Post[]
+
+  @@map("users")
+}
+
+// Posts table
+model Post {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  userId    String   @map("user_id")
+  title     String
+  slug      String
+  category  String?
+  excerpt   String?
+  content   String   @db.Text
+  thumbnail String
+  views     Int      @default(0)
+  tags      String?  // array like string
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments     PostComment[]
+  reactions    PostReaction?
+
+  @@unique([slug])
+  @@index([userId])
+  @@map("posts")
+}
+
+// Post comments
+model PostComment {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  userId    String   @map("user_id")
+  postId    String   @map("post_id")
+  content   String   @db.Text
+  upvotes   Int      @default(0)
+  downvotes Int      @default(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([postId])
+  @@map("post_comments")
+}
+
+// Post reactions
+model PostReaction {
+  id     String @id @default(cuid())
+  postId String @unique @map("post_id")
+  like   Int    @default(0)
+  love   Int    @default(0)
+  heart  Int    @default(0)
+  angry  Int    @default(0)
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("post_reactions")
+}
+
+// Post tags
+model PostTag {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  title     String
+  slug      String
+
+  @@unique([slug])
+  @@map("post_tags")
+}
+
+// Post categories
+model PostCategory {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  title     String
+  slug      String
+  desc      String?  @db.Text
+
+  @@unique([slug])
+  @@map("post_category")
+}
+
+// Projects table
+model Project {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+  title       String
+  slug        String
+  featured    Boolean  @default(false)
+  stacks      String   // comma separated stack
+  thumbnail   String
+  excerpt     String
+  links       Json     // github links, live links like
+  githubUrl   String?  @map("github_url")
+  clientLive  String?  @map("client_live")
+  apiLive     String?  @map("api_live")
+  challenge   String?
+  solution    String?
+  impact      String?
+  metrics     Json     // {label: string, value: string}[]
+
+  @@unique([slug])
+  @@map("projects")
+}
+
+// Mobile tech stacks
+model MobileTechStack {
+  id               String  @id @default(cuid())
+  name             String?
+  category         String  // frontend, backend, database, tooling
+  type             String  // core, data, learning
+  experience       String?
+  level            Float
+  description      String?
+  relatedProject   Json?   // {name: string, slug: string}
+  color            String?
+  accentHex        String? @map("accent_hex")
+
+  @@map("mobile_tech_stacks")
+}
+
+// Skill categories
+model SkillCategory {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  name      String?
+  slug      String?
+
+  skills Skill[]
+
+  @@map("skill_category")
+}
+
+// Skills
+model Skill {
+  id         String   @id @default(cuid())
+  name       String
+  level      Int
+  categoryId String   @map("category_id")
+
+  category SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+  @@map("skills")
+}
+
+// Experiences
+model Experience {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  company   String?
+  role      String?
+  period    String?
+  duration  String?
+  location  String?
+  highlights Json?    // { icon: React.ReactNode, text: string}[]
+  dotX      Int?     @map("dot_x")
+  dotY      Int?     @map("dot_y")
+  cardX     Int?     @map("card_x")
+  cardY     Int?     @map("card_y")
+  yearLabel String?  @map("year_label")
+  color     String?
+  isCurrent Boolean  @default(false) @map("is_current")
+
+  @@map("experiences")
+}
+
+// Certificates
+model Certificate {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+  name          String?
+  issuer        String?
+  completedDate String?  @map("completed_date")
+  url           String?
+  display       Boolean  @default(true)
+
+  @@map("certificates")
+}
