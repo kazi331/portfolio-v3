@@ -43,7 +43,7 @@ export const openApiDocument = {
       session: {
         type: "apiKey",
         in: "cookie",
-        name: "better-auth.session_token",
+        name: `${process.env.BETTER_AUTH_COOKIE_PREFIX}.session_token`,
         description: "Session cookie issued by POST /api/auth/sign-in/email.",
       },
     },

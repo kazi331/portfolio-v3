@@ -17,7 +17,7 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const cookieStore = await cookies();
-  const sessionToken = cookieStore.get('better-auth.session_token');
+  const sessionToken = cookieStore.get(`${process.env.BETTER_AUTH_COOKIE_PREFIX}.session_token`);
 
   if (!sessionToken) {
     redirect('/login');
