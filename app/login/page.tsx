@@ -33,15 +33,32 @@ export default function LoginPage() {
       if (response.ok) {
         router.push('/admin');
       } else {
-        const data = await response.json();
-        setError(data.message || 'Invalid email or password');
+        // 1. Get the raw response text instead of parsing JSON immediately
+        const rawText = await response.text();
+        console.log("Raw Server Response Status:", response.status);
+        console.log("Raw Server Response Body:", rawText);
+
+        // 2. Try to parse it safely if it looks like JSON
+        let errorMessage = 'Invalid email or password';
+        try {
+          if (rawText) {
+            const data = JSON.parse(rawText);
+            errorMessage = data.message || errorMessage;
+          }
+        } catch (parseError) {
+          console.error("Failed to parse error JSON:", parseError);
+          errorMessage = `Server Error (${response.status}). Please check server logs.`;
+        }
+
+        setError(errorMessage);
       }
     } catch (err) {
-      console.log("err", err)
+      console.error("Network/Fetch error:", err);
       setError('An error occurred during sign in');
     } finally {
       setLoading(false);
     }
+
   };
 
   return (
