@@ -2,6 +2,7 @@
 
 import {
   Award,
+  BookOpen,
   Briefcase,
   FileText,
   FolderKanban,
@@ -17,6 +18,7 @@ const navigation = [
   { name: 'Projects', href: '/admin/projects', icon: FolderKanban },
   { name: 'Skills', href: '/admin/skills', icon: Award },
   { name: 'Experiences', href: '/admin/experiences', icon: Briefcase },
+  { name: 'API docs', href: '/scalar', icon: BookOpen },
 ];
 
 export default function AdminSidebar() {
@@ -50,11 +52,10 @@ export default function AdminSidebar() {
               <li key={item.name} className="shrink-0">
                 <Link
                   href={item.href}
-                  className={`flex items-center gap-3 rounded-[10px_2px_10px_2px] px-4 py-3 font-mono text-[11px] uppercase tracking-wider transition ${
-                    isActive
+                  className={`flex items-center gap-3 rounded-[10px_2px_10px_2px] px-4 py-3 font-mono text-[11px] uppercase tracking-wider transition ${isActive
                       ? 'border border-accent/40 bg-accent/15 text-accent-secondary'
                       : 'border border-transparent text-muted-text hover:bg-white/5 hover:text-primary-text'
-                  }`}
+                    }`}
                 >
                   <item.icon className="h-4 w-4" />
                   {item.name}
