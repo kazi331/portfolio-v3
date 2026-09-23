@@ -41,6 +41,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const { name, level, categoryId } = body;
+    console.log("log level", level, parseInt(level));
 
     if (!name || !level || !categoryId) {
       return NextResponse.json(
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
     const skill = await prisma.skill.create({
       data: {
         name,
-        level,
+        level: parseInt(level),
         categoryId,
       },
       include: {

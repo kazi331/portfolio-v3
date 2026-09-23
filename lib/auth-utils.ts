@@ -1,5 +1,12 @@
-import { cookies } from 'next/headers';
+import { auth } from '@/lib/auth';
+import { cookies, headers } from 'next/headers';
 import { NextResponse } from 'next/server';
+
+export async function getAuthSession() {
+  return auth.api.getSession({
+    headers: await headers(),
+  });
+}
 
 export async function checkAuth() {
   const cookieStore = await cookies();

@@ -1,4 +1,4 @@
-import { checkAuth, unauthorizedResponse } from '@/lib/auth-utils';
+import { checkAuth, getAuthSession, unauthorizedResponse } from '@/lib/auth-utils';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -41,9 +41,9 @@ export async function GET(request: NextRequest) {
 // POST create new post
 export async function POST(request: NextRequest) {
   try {
-    const isAuthenticated = await checkAuth();
+    const session = await getAuthSession();
 
-    if (!isAuthenticated) {
+    if (!session) {
       return unauthorizedResponse();
     }
 
@@ -65,11 +65,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // For now, we'll use a default user ID since we don't have full session parsing
-    // In production, you'd want to properly validate the session and get the user ID
     const post = await prisma.post.create({
       data: {
-        userId: 'default-user-id', // This should come from the validated session
+        userId: session.user.id,
         title,
         slug,
         category,

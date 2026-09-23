@@ -56,7 +56,7 @@ export async function PUT(
       where: { id },
       data: {
         name,
-        level,
+        level: parseInt(level),
         categoryId,
       },
       include: {
