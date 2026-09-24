@@ -23,7 +23,7 @@ export default function FilterBar({
             key={category}
             onClick={() => onSelectCategory(category)}
             className={`px-4 py-2 rounded-full text-xs font-mono transition-colors duration-300 relative whitespace-nowrap cursor-pointer ${
-              isSelected ? 'text-primary-text' : 'text-muted-text hover:text-primary-text bg-white/3 hover:bg-white/5 border border-white/3'
+              isSelected ? '!text-white' : 'text-muted-text hover:text-primary-text bg-white/3 hover:bg-white/5 border border-white/3'
             }`}
           >
             <span className="relative z-10">{category}</span>

@@ -1,7 +1,9 @@
-import type { Metadata } from 'next';
-import { Inter, Space_Grotesk, Playfair_Display, Fugaz_One, Shrikhand } from 'next/font/google';
-import { siteConfig } from '@/lib/seo';
+import ThemeSync from '@/components/layout/ThemeSync';
 import { personalInfo } from '@/lib/data';
+import { siteConfig } from '@/lib/seo';
+import { themeBootScript } from '@/lib/theme';
+import type { Metadata } from 'next';
+import { Fugaz_One, Inter, Playfair_Display, Shrikhand, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 
 const inter = Inter({
@@ -202,12 +204,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} ${playfairDisplay.variable} ${fugazOne.variable} ${shrikhand.variable}`}>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body className="bg-background text-primary-text antialiased font-sans">
+        <ThemeSync />
         {children}
       </body>
     </html>

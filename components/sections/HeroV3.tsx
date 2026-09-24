@@ -265,9 +265,8 @@ export default function HeroV3({ isLoaded = true }: HeroV3Props) {
                   <path
                     d="M 40 96 C 100 40, 140 40, 180 96 C 220 150, 260 150, 320 96"
                     fill="none"
-                    stroke="#ffffff"
+                    stroke="var(--trace-line)"
                     strokeWidth="1"
-                    strokeOpacity="0.1"
                   />
 
                   {systemTraceActive && (
@@ -305,8 +304,8 @@ export default function HeroV3({ isLoaded = true }: HeroV3Props) {
                       {/* Icon Container */}
                       <div
                         style={{
-                          borderColor: isActive ? node.color : 'rgba(255,255,255,0.12)',
-                          backgroundColor: isActive ? 'rgba(255,255,255,0.06)' : '#141820'
+                          borderColor: isActive ? node.color : 'var(--node-border)',
+                          backgroundColor: isActive ? 'var(--node-active)' : 'var(--node-idle)'
                         }}
                         className="w-10 h-10 rounded-[8px_2px_8px_2px] border flex items-center justify-center text-white mb-2 transition-all duration-200"
                       >
