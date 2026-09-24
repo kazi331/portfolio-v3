@@ -17,6 +17,8 @@ export default function AddUserForm() {
         onSubmit={handleAddUser}>
         <input className="border border-gray-300 rounded-md p-2" required type="text" name="name" placeholder="Name" />
         <input className="border border-gray-300 rounded-md p-2" required type="email" name="email" placeholder="Email" />
+        <input className="border border-gray-300 rounded-md p-2" required type="tel" name="phone" placeholder="Phone" />
+        <input className="border border-gray-300 rounded-md p-2" required type="url" name="avatar" placeholder="Avatar" />
         <button disabled={isAdding} className="bg-blue-500 text-white rounded-md p-2" type="submit">{isAdding ? "Adding..." : "Add user"}</button>
     </form>)
 
@@ -26,17 +28,18 @@ export function UserList({ users }: { users: User[] }) {
     return <div className="flex flex-col gap-2 max-w-md mx-auto">
         {
             users.map((user: User) => (
-                <div key={user.id} className="border border-gray-800 rounded-md p-2">
-                    <p>{user.name}</p>
-                    <p>{user.email}</p>
+
+                <pre key={user.id} className="border border-gray-800 rounded-md p-2">
+                    <code>{JSON.stringify(user, null, 2)}</code>
                     <DeleteUserButton id={user.id} />
-                </div>
+                </pre>
+
             ))
         }
     </div>
 }
 
-export function DeleteUserButton({ id }: { id: number }) {
+export function DeleteUserButton({ id }: { id: string }) {
     const [isDeleting, setIsDeleting] = useState(false)
     const handleDeleteUser = async () => {
         setIsDeleting(true)

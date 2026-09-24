@@ -7,7 +7,8 @@
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start -H 0.0.0.0",
-    "lint": "eslint app components lib hooks"
+    "lint": "eslint app components lib hooks",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
