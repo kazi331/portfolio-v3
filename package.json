@@ -1,7 +1,8 @@
 {
-  "name": "ai-studio-applet",
+  "name": "portfolio-v3",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --port 3000",
     "build": "next build",
@@ -9,7 +10,10 @@
     "lint": "eslint app components lib hooks"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
     "clsx": "^2.1.1",
+    "dotenv": "^18.0.3",
     "lenis": "^1.3.25",
     "lucide-react": "^0.468.0",
     "motion": "^11.15.0",
@@ -22,11 +26,13 @@
     "@eslint/eslintrc": "^3.3.7",
     "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^20.17.9",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.2",
     "eslint": "^9.39.4",
     "eslint-config-next": "^15.1.10",
     "postcss": "^8.4.49",
+    "prisma": "^7.10.0",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.2"
   },
