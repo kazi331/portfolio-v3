@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const admin_auth_paths = ["/admin/login", "/admin/register"];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
     const sessionCookie = getSessionCookie(request, {

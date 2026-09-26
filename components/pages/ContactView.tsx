@@ -1,7 +1,6 @@
 'use client';
 
 import Footer from '@/components/layout/Footer';
-import Navbar from '@/components/layout/Navbar';
 import Chip from '@/components/shared/Chip';
 import Container from '@/components/shared/Container';
 import { personalInfo } from '@/lib/data';
@@ -174,8 +173,6 @@ export default function ContactView() {
     <div className="min-h-screen bg-[#0A0C0F] text-primary-text flex flex-col justify-between relative">
       {/* Subtle CAD grid overlay */}
       <div className="absolute inset-0 tech-grid opacity-25 pointer-events-none" />
-
-      <Navbar />
 
       <main className="pt-36 md:pt-44 flex-1 relative z-10">
         <Container>
@@ -431,11 +428,10 @@ export default function ContactView() {
                       id="contact-submit-btn"
                       type="submit"
                       disabled={status === 'loading'}
-                      className={`inline-flex items-center gap-2 rounded-[12px_3px_12px_3px] px-6 py-3.5 text-[11px] font-mono font-bold uppercase tracking-wider transition cursor-pointer active:scale-95 shadow-md ${
-                        status === 'loading'
+                      className={`inline-flex items-center gap-2 rounded-[12px_3px_12px_3px] px-6 py-3.5 text-[11px] font-mono font-bold uppercase tracking-wider transition cursor-pointer active:scale-95 shadow-md ${status === 'loading'
                           ? 'bg-white/20 text-white/50 cursor-not-allowed'
                           : 'bg-white text-black hover:bg-accent-secondary'
-                      }`}
+                        }`}
                     >
                       {status === 'loading' ? (
                         <>

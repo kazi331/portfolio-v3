@@ -1,7 +1,6 @@
 'use client';
 
 import Footer from '@/components/layout/Footer';
-import Navbar from '@/components/layout/Navbar';
 import Container from '@/components/shared/Container';
 import { blogPosts } from '@/lib/data';
 import {
@@ -129,9 +128,10 @@ export default function BlogListingView({ basePath = '/blog' }: BlogListingViewP
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#090909] text-[#F5F5F5] selection:bg-accent/30 selection:text-white">
+    <div className="min-h-screen bg-[#0A0C0F] text-primary-text flex flex-col justify-between relative">
+      {/* Subtle CAD grid overlay */}
+      <div className="absolute inset-0 tech-grid opacity-25 pointer-events-none" />
       {/* Universal Navigation Bar */}
-      <Navbar />
 
       <main className="flex-1 pt-28 pb-24 relative overflow-hidden">
         {/* Ambient background glows - zero-blur radial gradients */}

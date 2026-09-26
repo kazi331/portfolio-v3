@@ -1,7 +1,6 @@
 'use client';
 
 import Footer from '@/components/layout/Footer';
-import Navbar from '@/components/layout/Navbar';
 import Container from '@/components/shared/Container';
 import { blogPosts, personalInfo } from '@/lib/data';
 import {
@@ -17,13 +16,13 @@ import {
   Flame,
   Github,
   Home,
+  Link2,
+  Linkedin,
   Mail,
   Share2,
   Sparkles,
   ThumbsUp,
-  Twitter,
-  Linkedin,
-  Link2
+  Twitter
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -114,7 +113,6 @@ export default function BlogDetailsView({ slug, basePath = '/blog' }: BlogDetail
   return (
     <div className="bg-[#090909] min-h-screen flex flex-col justify-between overflow-x-hidden">
       {/* Portfolio Navbar */}
-      <Navbar />
 
       <main className="bg-[#090909] text-[#F5F5F5] pt-28 pb-20 relative selection:bg-accent/30 selection:text-white flex-1">
         {/* Top Reading Progress Bar */}
