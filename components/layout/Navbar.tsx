@@ -173,7 +173,7 @@ export default function Navbar() {
       id="navbar"
       className={`fixed z-50 left-1/2 -translate-x-1/2 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden ${isScrolled
         ? 'top-4 sm:top-5 w-[92%] max-w-3xl rounded-[18px_4px_18px_4px] border border-white/10 glass-nav shadow-2xl'
-        : 'top-0 w-full max-w-full rounded-none border-b border-white/10 border-t-0 border-x-0 bg-[#0A0C0F]/90 backdrop-blur-md shadow-none'
+        : 'top-0 w-full max-w-full rounded-none border-none border-transparent bg-[#0A0C0F]/90 backdrop-blur-md shadow-none'
         }`}
     >
       {/* Top Header Bar */}

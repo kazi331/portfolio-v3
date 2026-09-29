@@ -28,7 +28,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import MarkdownRenderer from './MarkdownRenderer';
-import ReadingProgressBar from './ReadingProgressBar';
 import TableOfContents from './TableOfContents';
 
 interface BlogDetailsViewProps {
@@ -116,7 +115,7 @@ export default function BlogDetailsView({ slug, basePath = '/blog' }: BlogDetail
 
       <main className="bg-[#090909] text-[#F5F5F5] pt-28 pb-20 relative selection:bg-accent/30 selection:text-white flex-1">
         {/* Top Reading Progress Bar */}
-        <ReadingProgressBar />
+        {/* <ReadingProgressBar /> */}
 
         {/* Atmospheric Ambient Glows - zero-blur radial gradients */}
         {/* <div className="absolute top-20 left-1/3 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(78,133,191,0.06)_0%,transparent_70%)] pointer-events-none" />
@@ -271,12 +270,12 @@ export default function BlogDetailsView({ slug, basePath = '/blog' }: BlogDetail
 
             {/* Optional Cover Photo System */}
             {post.coverImage && (
-              <div className="relative w-full h-[240px] sm:h-[380px] md:h-[460px] rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 shadow-2xl mt-8 bg-black/40 group">
+              <div className="relative w-full h-[240px] sm:h-[380px] md:h-[460px] rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 mt-8 bg-black/40 group">
                 <Image
                   src={post.coverImage}
                   alt={post.title}
                   fill
-                  priority
+                  loading='lazy'
                   sizes="(max-width: 1200px) 100vw, 1000px"
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   referrerPolicy="no-referrer"
@@ -297,7 +296,7 @@ export default function BlogDetailsView({ slug, basePath = '/blog' }: BlogDetail
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
             {/* Main Article Body (8 cols) */}
-            <div className={`lg:col-span-8 bg-[#0f0f0f]/60 border border-white/5 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-sm ${textSize === 'large' ? 'text-lg' : 'text-base'
+            <div className={`lg:col-span-8 bg-[#0f0f0f]/60 border border-white/5 rounded-3xl p-6 sm:p-10 backdrop-blur-sm ${textSize === 'large' ? 'text-lg' : 'text-base'
               }`}>
               {/* Rendered Markdown with Developer Code Blocks */}
               <MarkdownRenderer content={post.content || ''} />
