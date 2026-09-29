@@ -1,7 +1,6 @@
 'use client';
 
 import Footer from '@/components/layout/Footer';
-import Navbar from '@/components/layout/Navbar';
 import Chip from '@/components/shared/Chip';
 import Container from '@/components/shared/Container';
 import GithubRepositories from '@/components/shared/GithubRepositories';
@@ -14,7 +13,6 @@ import Link from 'next/link';
 export default function ProfileView() {
     return (
         <div className="min-h-screen bg-[#0A0C0F] text-primary-text">
-            <Navbar />
             <main>
                 {/* 1. Hero Section */}
                 <section className="relative overflow-hidden border-b border-white/10 pt-36 pb-20 md:pt-44 md:pb-28">
@@ -56,7 +54,7 @@ export default function ProfileView() {
                                     Engineering systems that feel <span className="font-serif font-light italic text-accent-secondary">considered.</span>
                                 </h1>
                                 <p className="mt-7 max-w-2xl text-base leading-8 text-muted-text font-sans">{personalInfo.summary}</p>
-                                
+
                                 <div className="mt-8 flex flex-wrap gap-3.5">
                                     <Link
                                         href="/contact"

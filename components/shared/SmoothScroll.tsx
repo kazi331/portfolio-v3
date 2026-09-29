@@ -41,15 +41,17 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     };
   }, []);
 
-  // When pathname changes, reset scroll position and recalculate layout dimensions
+  // When pathname changes, reset scroll position and recalculate layout dimensions.
+  // Hash targets are left in place so section links can scroll to the section.
   useEffect(() => {
+    const hasSectionHash = window.location.hash.length > 1;
     const lenis = (window as unknown as { __lenis?: { scrollTo: (target: number, opts?: object) => void; resize: () => void } }).__lenis;
     if (lenis && typeof lenis.scrollTo === 'function') {
-      lenis.scrollTo(0, { immediate: true });
+      if (!hasSectionHash) lenis.scrollTo(0, { immediate: true });
       setTimeout(() => {
         lenis.resize();
       }, 50);
-    } else {
+    } else if (!hasSectionHash) {
       window.scrollTo(0, 0);
     }
   }, [pathname]);
