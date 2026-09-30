@@ -1,14 +1,23 @@
-import AddUserForm, { DeleteAll, UserList } from "@/app/users/AddUser"
-import { User } from "@/generated/prisma/browser"
-import { prisma } from "@/lib/prisma"
+import AddUserForm, { DeleteAll, UserList } from "@/app/users/AddUser";
+import { prisma } from "@/lib/prisma";
+import type { User } from "@prisma/client";
 
-export default async function name() {
-    const users = await prisma.user.findMany({})
+export const dynamic = 'force-dynamic';
 
-    return <div>
-        <h2>Prisma users</h2>
-        <UserList users={users as User[]} />
-        {users.length > 0 && <DeleteAll />}
-        <AddUserForm />
-    </div>
+export default async function UsersPage() {
+    let users: User[] = [];
+    try {
+        users = await prisma.user.findMany({});
+    } catch {
+        users = [];
+    }
+
+    return (
+        <div className="p-8">
+            <h2 className="text-xl font-bold mb-4">Prisma users</h2>
+            <UserList users={users} />
+            {users.length > 0 && <DeleteAll />}
+            <AddUserForm />
+        </div>
+    );
 }
