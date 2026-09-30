@@ -1,183 +1,29 @@
 'use client';
 
+import { EntityForm } from '@/components/admin/EntityForm';
 import { authClient } from '@/lib/auth-client';
+import {
+    displayValue,
+    draftLabel,
+    entities,
+    fieldOptions,
+    navGroups,
+    type FormValues,
+    type ValidatedRecord,
+} from '@/lib/admin/entities';
 import { cn } from '@/lib/utils';
 import type { User } from 'better-auth';
-import {
-    Award,
-    Boxes,
-    Briefcase,
-    FileText,
-    Fingerprint,
-    FolderKanban,
-    GraduationCap,
-    Hash,
-    KeyRound,
-    Layers,
-    LogOut,
-    Menu,
-    MessageSquare,
-    MonitorSmartphone,
-    PanelLeftClose,
-    PanelLeftOpen,
-    Quote,
-    SmilePlus,
-    Users,
-    Wrench,
-    X,
-    type LucideIcon,
-} from 'lucide-react';
+import { LogOut, Menu, PanelLeftClose, PanelLeftOpen, Plus, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-type Entity = {
+type Draft = {
     id: string;
-    label: string;
-    description: string;
-    columns: string[];
-    icon: LucideIcon;
+    values: FormValues;
+    payload: Record<string, unknown>;
 };
 
-type NavGroup = {
-    id: string;
-    label: string;
-    items: Entity[];
-};
-
-const navGroups: NavGroup[] = [
-    {
-        id: 'portfolio',
-        label: 'Portfolio',
-        items: [
-            {
-                id: 'projects',
-                label: 'Projects',
-                description: 'Case studies, links, and the stack each one uses.',
-                columns: ['Name', 'Slug', 'Category', 'Featured', 'Live link'],
-                icon: FolderKanban,
-            },
-            {
-                id: 'experience',
-                label: 'Experience',
-                description: 'Roles, companies, and the dates they cover.',
-                columns: ['Role', 'Company', 'Start', 'End', 'Location'],
-                icon: Briefcase,
-            },
-            {
-                id: 'education',
-                label: 'Education',
-                description: 'Schools, degrees, and enrollment dates.',
-                columns: ['Institution', 'Degree', 'Start', 'End'],
-                icon: GraduationCap,
-            },
-            {
-                id: 'certifications',
-                label: 'Certifications',
-                description: 'Credentials, who issued them, and the proof link.',
-                columns: ['Name', 'Issuer', 'Completed', 'URL'],
-                icon: Award,
-            },
-            {
-                id: 'references',
-                label: 'References',
-                description: 'People who can speak to the work.',
-                columns: ['Name', 'Role', 'Company', 'Email'],
-                icon: Quote,
-            },
-            {
-                id: 'skills',
-                label: 'Skills',
-                description: 'Named skills, grouped by category.',
-                columns: ['Name', 'Categories'],
-                icon: Wrench,
-            },
-            {
-                id: 'skill-categories',
-                label: 'Skill categories',
-                description: 'Groups that skills belong to.',
-                columns: ['Name', 'Skills'],
-                icon: Layers,
-            },
-            {
-                id: 'stack',
-                label: 'Stack',
-                description: 'Tools shared across projects.',
-                columns: ['Name', 'Icon', 'Projects'],
-                icon: Boxes,
-            },
-        ],
-    },
-    {
-        id: 'writing',
-        label: 'Writing',
-        items: [
-            {
-                id: 'posts',
-                label: 'Posts',
-                description: 'Blog posts, their authors, tags, and comments.',
-                columns: ['Title', 'Slug', 'Category', 'Views', 'Author'],
-                icon: FileText,
-            },
-            {
-                id: 'tags',
-                label: 'Tags',
-                description: 'Labels attached to posts.',
-                columns: ['Name', 'Posts'],
-                icon: Hash,
-            },
-            {
-                id: 'comments',
-                label: 'Comments',
-                description: 'Replies left on posts.',
-                columns: ['Content', 'Post', 'Author', 'Upvotes'],
-                icon: MessageSquare,
-            },
-            {
-                id: 'reactions',
-                label: 'Reactions',
-                description: 'How readers marked a post.',
-                columns: ['Reaction', 'Post', 'User'],
-                icon: SmilePlus,
-            },
-        ],
-    },
-    {
-        id: 'access',
-        label: 'Access',
-        items: [
-            {
-                id: 'users',
-                label: 'Users',
-                description: 'Accounts that can sign in and publish.',
-                columns: ['Name', 'Email', 'Phone', 'Verified'],
-                icon: Users,
-            },
-            {
-                id: 'sessions',
-                label: 'Sessions',
-                description: 'Active sign-ins and when they expire.',
-                columns: ['User', 'Expires', 'IP address'],
-                icon: MonitorSmartphone,
-            },
-            {
-                id: 'accounts',
-                label: 'Accounts',
-                description: 'Login providers linked to a user.',
-                columns: ['User', 'Provider'],
-                icon: KeyRound,
-            },
-            {
-                id: 'passkeys',
-                label: 'Passkeys',
-                description: 'Device credentials registered for sign-in.',
-                columns: ['Name', 'Device', 'User'],
-                icon: Fingerprint,
-            },
-        ],
-    },
-];
-
-const entities = navGroups.flatMap((group) => group.items);
+type EditorState = { mode: 'create' } | { mode: 'edit'; id: string };
 
 export default function AdminDashboard() {
     const router = useRouter();
@@ -186,6 +32,8 @@ export default function AdminDashboard() {
     const [activeId, setActiveId] = useState(entities[0].id);
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [drafts, setDrafts] = useState<Record<string, Draft[]>>({});
+    const [editor, setEditor] = useState<EditorState | null>(null);
 
     const checkAuth = useCallback(async () => {
         const response = await authClient.getSession();
@@ -202,25 +50,68 @@ export default function AdminDashboard() {
     }, [checkAuth]);
 
     useEffect(() => {
-        if (!mobileOpen) return;
         const onKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') setMobileOpen(false);
+            if (event.key !== 'Escape') return;
+            const tag = (event.target as HTMLElement | null)?.tagName;
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+            if (editor) {
+                setEditor(null);
+                return;
+            }
+            setMobileOpen(false);
         };
         window.addEventListener('keydown', onKeyDown);
         return () => window.removeEventListener('keydown', onKeyDown);
-    }, [mobileOpen]);
+    }, [editor]);
 
     const active = entities.find((entity) => entity.id === activeId) ?? entities[0];
     const labelsHidden = collapsed && !mobileOpen;
+    const records = drafts[active.id] ?? [];
+    const editing = editor?.mode === 'edit' ? records.find((record) => record.id === editor.id) : undefined;
+
+    const optionsBySource = useMemo(() => {
+        const lists: Record<string, { value: string; label: string }[]> = {};
+        for (const entity of entities) {
+            lists[entity.id] = (drafts[entity.id] ?? []).map((record) => ({
+                value: record.id,
+                label: draftLabel(record.values),
+            }));
+        }
+        if (user && !lists.users.some((option) => option.value === user.id)) {
+            lists.users = [{ value: user.id, label: user.name || user.email }, ...lists.users];
+        }
+        return lists;
+    }, [drafts, user]);
 
     const selectEntity = (id: string) => {
         setActiveId(id);
+        setEditor(null);
         setMobileOpen(false);
     };
 
     const signOut = async () => {
         await authClient.signOut();
         router.push('/admin/login');
+    };
+
+    const saveRecord = (record: ValidatedRecord) => {
+        // `record.payload` is the validated body. The API call replaces this local update.
+        setDrafts((current) => {
+            const list = current[active.id] ?? [];
+            if (editor?.mode === 'edit' && editor.id) {
+                return {
+                    ...current,
+                    [active.id]: list.map((item) =>
+                        item.id === editor.id ? { id: item.id, values: record.values, payload: record.payload } : item,
+                    ),
+                };
+            }
+            return {
+                ...current,
+                [active.id]: [...list, { id: crypto.randomUUID(), values: record.values, payload: record.payload }],
+            };
+        });
+        setEditor(null);
     };
 
     if (!ready) {
@@ -349,35 +240,89 @@ export default function AdminDashboard() {
                             <p className="mt-1 max-w-xl text-sm leading-6 text-muted-text">{active.description}</p>
                         </div>
                     </div>
+                    {!editor && (
+                        <button
+                            type="button"
+                            onClick={() => setEditor({ mode: 'create' })}
+                            className="inline-flex shrink-0 items-center gap-2 rounded-[12px_3px_12px_3px] bg-[#F1F3F5] px-3 py-2 font-mono text-[11px] font-bold uppercase tracking-wider text-[#0A0C0F] transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                        >
+                            <Plus className="h-3.5 w-3.5" aria-hidden />
+                            Add {active.singular}
+                        </button>
+                    )}
                 </header>
 
                 <main className="min-h-0 flex-1 overflow-y-auto px-4 py-6 md:px-8">
-                    <div className="@container overflow-x-auto border border-white/10 bg-surface-raised">
-                        <table className="w-full border-collapse text-left text-sm">
-                            <thead>
-                                <tr className="border-b border-white/10">
-                                    {active.columns.map((column) => (
-                                        <th
-                                            key={column}
-                                            scope="col"
-                                            className="whitespace-nowrap px-4 py-3 font-normal text-muted-text"
-                                        >
-                                            {column}
+                    {editor ? (
+                        <EntityForm
+                            key={editor.mode === 'edit' ? editor.id : `${active.id}-create`}
+                            entity={active}
+                            mode={editor.mode}
+                            initialValues={editing?.values}
+                            optionsBySource={optionsBySource}
+                            onSubmit={saveRecord}
+                            onCancel={() => setEditor(null)}
+                        />
+                    ) : (
+                        <div className="@container overflow-x-auto border border-white/10 bg-surface-raised">
+                            <table className="w-full border-collapse text-left text-sm">
+                                <thead>
+                                    <tr className="border-b border-white/10">
+                                        {active.columns.map((column) => (
+                                            <th
+                                                key={column.key}
+                                                scope="col"
+                                                className="whitespace-nowrap px-4 py-3 font-normal text-muted-text"
+                                            >
+                                                {column.label}
+                                            </th>
+                                        ))}
+                                        <th scope="col" className="px-4 py-3">
+                                            <span className="sr-only">Actions</span>
                                         </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colSpan={active.columns.length} className="p-0">
-                                        <p className="sticky left-0 w-[100cqw] px-4 py-16 text-center text-sm text-muted-text">
-                                            No {active.label.toLowerCase()} yet.
-                                        </p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {records.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={active.columns.length + 1} className="p-0">
+                                                <p className="sticky left-0 w-[100cqw] px-4 py-16 text-center text-sm text-muted-text">
+                                                    No {active.label.toLowerCase()} yet.
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        records.map((record) => (
+                                            <tr key={record.id} className="border-b border-white/10 last:border-b-0">
+                                                {active.columns.map((column) => {
+                                                    const field = active.fields.find((item) => item.name === column.key);
+                                                    const text = displayValue(
+                                                        field,
+                                                        record.values[column.key],
+                                                        field ? fieldOptions(field, optionsBySource) : [],
+                                                    );
+                                                    return (
+                                                        <td key={column.key} className="max-w-[220px] truncate px-4 py-3 text-primary-text" title={text}>
+                                                            {text || <span className="text-muted-text">—</span>}
+                                                        </td>
+                                                    );
+                                                })}
+                                                <td className="px-4 py-3 text-right">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setEditor({ mode: 'edit', id: record.id })}
+                                                        className="text-sm text-accent-secondary transition hover:text-primary-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </main>
             </div>
         </div>
