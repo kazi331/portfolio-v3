@@ -8,5 +8,6 @@ coverage/
 !.env.example
 tsconfig.tsbuildinfo
 /lib/generated/prisma
+next-env.d.ts
 
 /generated/prisma
