@@ -4,7 +4,7 @@ import AdminDataTable, { Column } from '@/components/admin/AdminDataTable';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import AdminStatCard from '@/components/admin/AdminStatCard';
 import { CheckCircle2, MessageSquare, ThumbsDown, ThumbsUp, XCircle } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 interface CommentRecord {
   id: string;
@@ -81,7 +81,7 @@ export default function AdminCommentsPage() {
       accessorKey: 'content',
       cell: (item) => (
         <p className="text-xs text-muted-text max-w-sm line-clamp-2 leading-relaxed">
-          "{item.content}"
+          &quot;{item.content}&quot;
         </p>
       ),
     },
@@ -103,13 +103,12 @@ export default function AdminCommentsPage() {
       accessorKey: 'status',
       cell: (item) => (
         <span
-          className={`inline-flex items-center gap-1 rounded-[4px_1px_4px_1px] px-2 py-0.5 font-mono text-[10px] ${
-            item.status === 'Approved'
-              ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
-              : item.status === 'Pending'
+          className={`inline-flex items-center gap-1 rounded-[4px_1px_4px_1px] px-2 py-0.5 font-mono text-[10px] ${item.status === 'Approved'
+            ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
+            : item.status === 'Pending'
               ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20'
               : 'bg-red-500/10 text-red-300 border border-red-500/20'
-          }`}
+            }`}
         >
           {item.status === 'Approved' ? (
             <CheckCircle2 className="h-2.5 w-2.5" />
