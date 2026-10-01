@@ -1,15 +1,89 @@
 'use client';
 
+import React, { useState } from 'react';
 import AdminDataTable, { Column } from '@/components/admin/AdminDataTable';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import AdminStatCard from '@/components/admin/AdminStatCard';
+import AdminDynamicModal, { FormFieldDef } from '@/components/admin/AdminDynamicModal';
+import { referenceSchema } from '@/lib/admin/validation';
 import { references } from '@/lib/data';
 import { Reference } from '@/types/portfolio';
-import { Building2, Mail, Plus, UserCheck, Users } from 'lucide-react';
-import React, { useState } from 'react';
+import { Building2, Mail, Users, CheckCircle2 } from 'lucide-react';
+
+const REF_FIELDS: FormFieldDef[] = [
+  {
+    name: 'name',
+    label: 'Reference Full Name',
+    type: 'text',
+    placeholder: 'e.g. Sarah Jenkins',
+    required: true,
+  },
+  {
+    name: 'role',
+    label: 'Role / Designation',
+    type: 'text',
+    placeholder: 'e.g. VP of Engineering',
+    required: true,
+  },
+  {
+    name: 'company',
+    label: 'Company / Organization',
+    type: 'text',
+    placeholder: 'e.g. Linear, Vercel',
+    required: true,
+  },
+  {
+    name: 'email',
+    label: 'Corporate / Contact Email',
+    type: 'text',
+    placeholder: 'sarah.jenkins@company.com',
+    required: true,
+  },
+];
 
 export default function AdminReferencesPage() {
   const [refList, setRefList] = useState<Reference[]>(references);
+  const [selectedRef, setSelectedRef] = useState<Reference | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [notification, setNotification] = useState<string | null>(null);
+
+  const showNotification = (msg: string) => {
+    setNotification(msg);
+    setTimeout(() => setNotification(null), 4000);
+  };
+
+  const handleOpenCreate = () => {
+    setSelectedRef(null);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (item: Reference) => {
+    setSelectedRef(item);
+    setIsModalOpen(true);
+  };
+
+  const handleSave = (saved: any) => {
+    if (selectedRef) {
+      setRefList((prev) =>
+        prev.map((r) =>
+          r.name === selectedRef.name && r.email === selectedRef.email ? saved : r
+        )
+      );
+      showNotification(`Reference "${saved.name}" was updated.`);
+    } else {
+      setRefList((prev) => [saved, ...prev]);
+      showNotification(`Reference "${saved.name}" was added.`);
+    }
+    setIsModalOpen(false);
+    setSelectedRef(null);
+  };
+
+  const handleDelete = (item: Reference) => {
+    if (confirm(`Remove reference "${item.name}"?`)) {
+      setRefList((prev) => prev.filter((r) => r.name !== item.name || r.email !== item.email));
+      showNotification(`Reference "${item.name}" was deleted.`);
+    }
+  };
 
   const columns: Column<Reference>[] = [
     {
@@ -52,11 +126,28 @@ export default function AdminReferencesPage() {
 
   return (
     <div className="space-y-6">
+      {notification && (
+        <div className="flex items-center justify-between rounded-[8px_2px_8px_2px] border border-accent/30 bg-accent/15 px-4 py-2.5 text-accent animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-center gap-2 font-mono text-xs font-semibold">
+            <CheckCircle2 className="h-4 w-4" />
+            <span>{notification}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setNotification(null)}
+            className="text-accent/70 hover:text-accent font-mono text-xs"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       <AdminPageHeader
         title="Professional References"
         description="Manage professional colleagues, recommendations, and contact information mapped to the @Reference model."
         model="Reference"
         actionLabel="Add Reference"
+        onAction={handleOpenCreate}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -79,9 +170,22 @@ export default function AdminReferencesPage() {
         data={refList}
         searchKey="name"
         searchPlaceholder="Search references..."
-        onDelete={(item) => {
-          setRefList((prev) => prev.filter((r) => r.name !== item.name));
+        onEdit={handleOpenEdit}
+        onDelete={handleDelete}
+      />
+
+      <AdminDynamicModal<any>
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedRef(null);
         }}
+        onSave={handleSave}
+        initialData={selectedRef}
+        title="Reference"
+        model="Reference"
+        fields={REF_FIELDS}
+        schema={referenceSchema}
       />
     </div>
   );
