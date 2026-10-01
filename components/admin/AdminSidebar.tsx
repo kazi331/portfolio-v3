@@ -226,7 +226,7 @@ export default function AdminSidebar({
   const sidebarContent = (
     <div className="flex h-full flex-col justify-between overflow-hidden bg-[#0D1015] border-r border-white/10 text-[#F1F3F5] select-none">
       {/* Top Header & Brand */}
-      <div className="flex items-center justify-between border-b border-white/10 px-3.5 py-4 min-h-[64px]">
+      <div className="flex items-center justify-between border-b border-white/10 px-3.5 py-4 h-16">
         {showLabel ? (
           <div className="flex items-center gap-2.5 overflow-hidden">
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[6px_2px_6px_2px] bg-accent/20 border border-accent/40 text-accent font-mono text-xs font-bold shadow-sm">
