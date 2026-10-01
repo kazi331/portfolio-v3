@@ -85,7 +85,15 @@ export async function POST(req: NextRequest) {
         reply_to: email,
         subject: subject || 'New Portfolio Contact Submission',
         message,
-        sent_at: new Date().toISOString(),
+         time: new Date().toLocaleString("en-US", {
+          timeZone: "Asia/Dhaka",
+          year: "numeric",
+          month: "short",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
       },
     };
 
