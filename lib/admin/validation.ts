@@ -149,3 +149,53 @@ export const referenceSchema = z.object({
 });
 
 export type ReferenceFormData = z.infer<typeof referenceSchema>;
+
+// Course schema (spacious full-page / parallel route entity)
+export const courseSchema = z.object({
+  title: z
+    .string()
+    .min(3, 'Course title must be at least 3 characters')
+    .max(160, 'Title cannot exceed 160 characters'),
+  slug: z
+    .string()
+    .min(2, 'Slug must be at least 2 characters')
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be lowercase alphanumeric with hyphens'),
+  platform: z
+    .string()
+    .min(2, 'Platform or academy name is required (e.g. DataCamp, Boot.dev)'),
+  instructor: z
+    .string()
+    .optional(),
+  category: z
+    .string()
+    .min(2, 'Category is required'),
+  duration: z
+    .string()
+    .optional(),
+  status: z
+    .enum(['Completed', 'In Progress', 'Planned'])
+    .default('Completed'),
+  completionDate: z
+    .string()
+    .min(2, 'Completion date or timeline is required'),
+  certificateUrl: z
+    .string()
+    .optional()
+    .refine((val) => !val || val.startsWith('http://') || val.startsWith('https://'), {
+      message: 'Certificate URL must start with http:// or https://',
+    }),
+  description: z
+    .string()
+    .min(10, 'Course description must be at least 10 characters long'),
+  syllabus: z
+    .array(z.string())
+    .default([]),
+  skills: z
+    .array(z.string())
+    .min(1, 'Please add at least 1 technology or skill learned'),
+  featured: z
+    .boolean()
+    .default(false),
+});
+
+export type CourseFormData = z.infer<typeof courseSchema>;

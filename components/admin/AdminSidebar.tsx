@@ -3,6 +3,7 @@
 import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Award,
+  BookOpen,
   Building2,
   Cpu,
   ExternalLink,
@@ -128,6 +129,14 @@ export const ADMIN_NAV_GROUPS: NavGroup[] = [
   {
     group: 'Credentials',
     items: [
+      {
+        name: 'Courses',
+        href: '/admin/courses',
+        icon: BookOpen,
+        description: 'Curriculum & professional training',
+        model: 'Course',
+        badge: '5',
+      },
       {
         name: 'Education',
         href: '/admin/education',

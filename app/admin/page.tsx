@@ -117,6 +117,15 @@ export default function AdminDashboard() {
       description: 'Degrees, colleges & academic credentials',
     },
     {
+      title: 'Courses',
+      count: '5',
+      href: '/admin/courses',
+      icon: BookOpen,
+      color: 'text-indigo-400 border-indigo-500/20 bg-indigo-500/10',
+      model: 'Course',
+      description: 'Curriculum records & syllabus modules',
+    },
+    {
       title: 'Certifications',
       count: '5',
       href: '/admin/certifications',
