@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminDataTable, { Column } from '@/components/admin/AdminDataTable';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import AdminStatCard from '@/components/admin/AdminStatCard';
@@ -77,6 +77,23 @@ export default function AdminSkillsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
 
+  useEffect(() => {
+    async function loadSkills() {
+      try {
+        const res = await fetch('/api/skills');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+            setSkillsList(json.data);
+          }
+        }
+      } catch (err) {
+        console.warn('API fetch skills warning:', err);
+      }
+    }
+    loadSkills();
+  }, []);
+
   const showNotification = (msg: string) => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 4000);
@@ -97,28 +114,65 @@ export default function AdminSkillsPage() {
     setIsModalOpen(true);
   };
 
-  const handleSaveSkill = (saved: any) => {
+  const handleSaveSkill = async (saved: any) => {
     if (selectedSkill) {
       setSkillsList((prev) =>
         prev.map((s) => (s.id === selectedSkill.id ? { ...saved, id: selectedSkill.id } : s))
       );
       showNotification(`Skill "${saved.name}" was updated.`);
+
+      try {
+        await fetch(`/api/skills/${selectedSkill.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saved),
+        });
+      } catch (err) {
+        console.warn('API update skill error:', err);
+      }
     } else {
+      const tempId = String(Date.now());
       const newSkill: FlattenedSkill = {
         ...saved,
-        id: String(Date.now()),
+        id: tempId,
       };
       setSkillsList((prev) => [newSkill, ...prev]);
       showNotification(`Skill "${saved.name}" was added.`);
+
+      try {
+        const res = await fetch('/api/skills', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saved),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data?.id) {
+            setSkillsList((prev) =>
+              prev.map((s) => (s.id === tempId ? { ...s, id: json.data.id } : s))
+            );
+          }
+        }
+      } catch (err) {
+        console.warn('API create skill error:', err);
+      }
     }
     setIsModalOpen(false);
     setSelectedSkill(null);
   };
 
-  const handleDelete = (item: FlattenedSkill) => {
+  const handleDelete = async (item: FlattenedSkill) => {
     if (confirm(`Delete skill "${item.name}"?`)) {
       setSkillsList((prev) => prev.filter((s) => s.id !== item.id));
       showNotification(`Skill "${item.name}" was removed.`);
+
+      try {
+        await fetch(`/api/skills/${item.id}`, {
+          method: 'DELETE',
+        });
+      } catch (err) {
+        console.warn('API delete skill error:', err);
+      }
     }
   };
 

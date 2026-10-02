@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminDataTable, { Column } from '@/components/admin/AdminDataTable';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import AdminStatCard from '@/components/admin/AdminStatCard';
@@ -99,6 +99,23 @@ export default function AdminStackPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
 
+  useEffect(() => {
+    async function loadStack() {
+      try {
+        const res = await fetch('/api/stack');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+            setStackList(json.data);
+          }
+        }
+      } catch (err) {
+        console.warn('API fetch stack warning:', err);
+      }
+    }
+    loadStack();
+  }, []);
+
   const showNotification = (msg: string) => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 4000);
@@ -114,7 +131,7 @@ export default function AdminStackPage() {
     setIsModalOpen(true);
   };
 
-  const handleSaveStack = (savedData: any) => {
+  const handleSaveStack = async (savedData: any) => {
     if (selectedItem) {
       setStackList((prev) =>
         prev.map((item) =>
@@ -122,22 +139,59 @@ export default function AdminStackPage() {
         )
       );
       showNotification(`Technology "${savedData.name}" was updated.`);
+
+      try {
+        await fetch(`/api/stack/${selectedItem.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(savedData),
+        });
+      } catch (err) {
+        console.warn('API update stack error:', err);
+      }
     } else {
+      const tempId = String(Date.now());
       const newItem: StackItem = {
         ...savedData,
-        id: String(Date.now()),
+        id: tempId,
       };
       setStackList((prev) => [newItem, ...prev]);
       showNotification(`Technology "${savedData.name}" was added to the orbital stack.`);
+
+      try {
+        const res = await fetch('/api/stack', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(savedData),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data?.id) {
+            setStackList((prev) =>
+              prev.map((s) => (s.id === tempId ? { ...s, id: json.data.id } : s))
+            );
+          }
+        }
+      } catch (err) {
+        console.warn('API create stack error:', err);
+      }
     }
     setIsModalOpen(false);
     setSelectedItem(null);
   };
 
-  const handleDelete = (item: StackItem) => {
+  const handleDelete = async (item: StackItem) => {
     if (confirm(`Remove "${item.name}" from stack?`)) {
       setStackList((prev) => prev.filter((s) => s.id !== item.id));
       showNotification(`"${item.name}" was removed.`);
+
+      try {
+        await fetch(`/api/stack/${item.id}`, {
+          method: 'DELETE',
+        });
+      } catch (err) {
+        console.warn('API delete stack error:', err);
+      }
     }
   };
 

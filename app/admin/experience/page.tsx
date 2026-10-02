@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminDataTable, { Column } from '@/components/admin/AdminDataTable';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import AdminStatCard from '@/components/admin/AdminStatCard';
@@ -68,6 +68,23 @@ export default function AdminExperiencePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
 
+  useEffect(() => {
+    async function loadExperience() {
+      try {
+        const res = await fetch('/api/experience');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+            setExpList(json.data);
+          }
+        }
+      } catch (err) {
+        console.warn('API fetch experience warning:', err);
+      }
+    }
+    loadExperience();
+  }, []);
+
   const showNotification = (msg: string) => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 4000);
@@ -83,7 +100,7 @@ export default function AdminExperiencePage() {
     setIsModalOpen(true);
   };
 
-  const handleSave = (saved: any) => {
+  const handleSave = async (saved: any) => {
     if (selectedExp) {
       setExpList((prev) =>
         prev.map((e) =>
@@ -91,18 +108,60 @@ export default function AdminExperiencePage() {
         )
       );
       showNotification(`Position at "${saved.company}" was updated.`);
+
+      try {
+        const targetId = (selectedExp as any).id || selectedExp.company;
+        await fetch(`/api/experience/${targetId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saved),
+        });
+      } catch (err) {
+        console.warn('API update experience error:', err);
+      }
     } else {
       setExpList((prev) => [saved, ...prev]);
       showNotification(`Position at "${saved.company}" was added.`);
+
+      try {
+        const res = await fetch('/api/experience', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saved),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data?.id) {
+            setExpList((prev) =>
+              prev.map((e) =>
+                e.company === saved.company && e.role === saved.role
+                  ? { ...e, id: json.data.id }
+                  : e
+              )
+            );
+          }
+        }
+      } catch (err) {
+        console.warn('API create experience error:', err);
+      }
     }
     setIsModalOpen(false);
     setSelectedExp(null);
   };
 
-  const handleDelete = (item: WorkExperience) => {
+  const handleDelete = async (item: WorkExperience) => {
     if (confirm(`Remove position at "${item.company}"?`)) {
       setExpList((prev) => prev.filter((e) => e.company !== item.company || e.role !== item.role));
       showNotification(`Position at "${item.company}" was deleted.`);
+
+      try {
+        const targetId = (item as any).id || item.company;
+        await fetch(`/api/experience/${targetId}`, {
+          method: 'DELETE',
+        });
+      } catch (err) {
+        console.warn('API delete experience error:', err);
+      }
     }
   };
 

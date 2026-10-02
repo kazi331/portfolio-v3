@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminDataTable, { Column } from '@/components/admin/AdminDataTable';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import AdminStatCard from '@/components/admin/AdminStatCard';
@@ -80,29 +80,84 @@ export default function AdminProjectsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
 
+  useEffect(() => {
+    async function loadProjects() {
+      try {
+        const res = await fetch('/api/projects');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+            setProjectList(json.data);
+          }
+        }
+      } catch (err) {
+        console.warn('API fetch projects warning:', err);
+      }
+    }
+    loadProjects();
+  }, []);
+
   const showNotification = (msg: string) => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 4000);
   };
 
-  const handleSaveProject = (saved: Project) => {
+  const handleSaveProject = async (saved: Project) => {
     if (selectedProject) {
       setProjectList((prev) =>
         prev.map((p) => (p.slug === selectedProject.slug ? saved : p))
       );
       showNotification(`Project "${saved.title}" was updated successfully.`);
+
+      try {
+        const targetId = (selectedProject as any).id || selectedProject.slug;
+        await fetch(`/api/projects/${targetId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saved),
+        });
+      } catch (err) {
+        console.warn('API update project error:', err);
+      }
     } else {
       setProjectList((prev) => [saved, ...prev]);
       showNotification(`Project "${saved.title}" was created successfully.`);
+
+      try {
+        const res = await fetch('/api/projects', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saved),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data?.id) {
+            setProjectList((prev) =>
+              prev.map((p) => (p.slug === saved.slug ? { ...p, id: json.data.id } : p))
+            );
+          }
+        }
+      } catch (err) {
+        console.warn('API create project error:', err);
+      }
     }
     setIsModalOpen(false);
     setSelectedProject(null);
   };
 
-  const handleDeleteProject = (proj: Project) => {
+  const handleDeleteProject = async (proj: Project) => {
     if (confirm(`Are you sure you want to delete "${proj.title}"?`)) {
       setProjectList((prev) => prev.filter((p) => p.slug !== proj.slug));
       showNotification(`Project "${proj.title}" was removed.`);
+
+      try {
+        const targetId = (proj as any).id || proj.slug;
+        await fetch(`/api/projects/${targetId}`, {
+          method: 'DELETE',
+        });
+      } catch (err) {
+        console.warn('API delete project error:', err);
+      }
     }
   };
 

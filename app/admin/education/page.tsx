@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminDataTable, { Column } from '@/components/admin/AdminDataTable';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import AdminStatCard from '@/components/admin/AdminStatCard';
@@ -40,6 +40,23 @@ export default function AdminEducationPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
 
+  useEffect(() => {
+    async function loadEducation() {
+      try {
+        const res = await fetch('/api/education');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+            setEduList(json.data);
+          }
+        }
+      } catch (err) {
+        console.warn('API fetch education warning:', err);
+      }
+    }
+    loadEducation();
+  }, []);
+
   const showNotification = (msg: string) => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 4000);
@@ -55,7 +72,7 @@ export default function AdminEducationPage() {
     setIsModalOpen(true);
   };
 
-  const handleSave = (saved: any) => {
+  const handleSave = async (saved: any) => {
     if (selectedEdu) {
       setEduList((prev) =>
         prev.map((e) =>
@@ -63,18 +80,60 @@ export default function AdminEducationPage() {
         )
       );
       showNotification(`Education "${saved.degree}" was updated.`);
+
+      try {
+        const targetId = (selectedEdu as any).id || selectedEdu.degree;
+        await fetch(`/api/education/${targetId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saved),
+        });
+      } catch (err) {
+        console.warn('API update education error:', err);
+      }
     } else {
       setEduList((prev) => [saved, ...prev]);
       showNotification(`Education "${saved.degree}" was added.`);
+
+      try {
+        const res = await fetch('/api/education', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saved),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data?.id) {
+            setEduList((prev) =>
+              prev.map((e) =>
+                e.degree === saved.degree && e.institution === saved.institution
+                  ? { ...e, id: json.data.id }
+                  : e
+              )
+            );
+          }
+        }
+      } catch (err) {
+        console.warn('API create education error:', err);
+      }
     }
     setIsModalOpen(false);
     setSelectedEdu(null);
   };
 
-  const handleDelete = (item: Education) => {
+  const handleDelete = async (item: Education) => {
     if (confirm(`Remove degree "${item.degree}"?`)) {
       setEduList((prev) => prev.filter((e) => e.degree !== item.degree || e.institution !== item.institution));
       showNotification(`Degree "${item.degree}" was deleted.`);
+
+      try {
+        const targetId = (item as any).id || item.degree;
+        await fetch(`/api/education/${targetId}`, {
+          method: 'DELETE',
+        });
+      } catch (err) {
+        console.warn('API delete education error:', err);
+      }
     }
   };
 

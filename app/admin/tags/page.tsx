@@ -1,10 +1,12 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import AdminDataTable, { Column } from '@/components/admin/AdminDataTable';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import AdminStatCard from '@/components/admin/AdminStatCard';
-import { FileText, Plus, Tag as TagIcon } from 'lucide-react';
-import React, { useState } from 'react';
+import AdminDynamicModal, { FormFieldDef } from '@/components/admin/AdminDynamicModal';
+import { tagSchema } from '@/lib/admin/validation';
+import { FileText, Tag as TagIcon, CheckCircle2, Loader2 } from 'lucide-react';
 
 interface TagItem {
   id: string;
@@ -27,8 +29,142 @@ const initialTags: TagItem[] = [
   { id: '11', name: 'Docker', postCount: 2, createdAt: '2024-03-15' },
 ];
 
+const TAG_FIELDS: FormFieldDef[] = [
+  {
+    name: 'name',
+    label: 'Tag Label',
+    type: 'text',
+    placeholder: 'e.g. GraphQL, TailwindCSS, Rust',
+    required: true,
+    helperText: 'Unique identifier used for categorizing posts and portfolio items.',
+  },
+  {
+    name: 'postCount',
+    label: 'Estimated Associated Posts Count',
+    type: 'number',
+    placeholder: '0',
+    defaultValue: 0,
+    required: true,
+  },
+];
+
 export default function AdminTagsPage() {
   const [tags, setTags] = useState<TagItem[]>(initialTags);
+  const [selectedTag, setSelectedTag] = useState<TagItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [notification, setNotification] = useState<string | null>(null);
+
+  const showNotification = (msg: string) => {
+    setNotification(msg);
+    setTimeout(() => setNotification(null), 4000);
+  };
+
+  // Fetch from API
+  useEffect(() => {
+    async function loadTags() {
+      setIsLoading(true);
+      try {
+        const res = await fetch('/api/tags');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+            setTags(json.data);
+          }
+        }
+      } catch (err) {
+        console.warn('API fetch tags warning:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadTags();
+  }, []);
+
+  const handleOpenCreate = () => {
+    setSelectedTag(null);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (item: TagItem) => {
+    setSelectedTag(item);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveTag = async (saved: any) => {
+    if (selectedTag) {
+      // Optimistic update
+      const updatedItem: TagItem = {
+        id: selectedTag.id,
+        name: saved.name,
+        postCount: Number(saved.postCount) || 0,
+        createdAt: selectedTag.createdAt,
+      };
+
+      setTags((prev) =>
+        prev.map((t) => (t.id === selectedTag.id ? updatedItem : t))
+      );
+      showNotification(`Tag "${saved.name}" updated successfully.`);
+
+      try {
+        await fetch(`/api/tags/${selectedTag.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saved),
+        });
+      } catch (err) {
+        console.warn('API update tag error:', err);
+      }
+    } else {
+      // Create new tag
+      const tempId = String(Date.now());
+      const newItem: TagItem = {
+        id: tempId,
+        name: saved.name,
+        postCount: Number(saved.postCount) || 0,
+        createdAt: new Date().toISOString().split('T')[0],
+      };
+
+      setTags((prev) => [newItem, ...prev]);
+      showNotification(`Tag "${saved.name}" created successfully.`);
+
+      try {
+        const res = await fetch('/api/tags', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saved),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data?.id) {
+            setTags((prev) =>
+              prev.map((t) => (t.id === tempId ? { ...t, id: json.data.id } : t))
+            );
+          }
+        }
+      } catch (err) {
+        console.warn('API create tag error:', err);
+      }
+    }
+
+    setIsModalOpen(false);
+    setSelectedTag(null);
+  };
+
+  const handleDelete = async (item: TagItem) => {
+    if (confirm(`Are you sure you want to delete tag "${item.name}"?`)) {
+      setTags((prev) => prev.filter((t) => t.id !== item.id));
+      showNotification(`Tag "${item.name}" was deleted.`);
+
+      try {
+        await fetch(`/api/tags/${item.id}`, {
+          method: 'DELETE',
+        });
+      } catch (err) {
+        console.warn('API delete tag error:', err);
+      }
+    }
+  };
 
   const columns: Column<TagItem>[] = [
     {
@@ -61,11 +197,28 @@ export default function AdminTagsPage() {
 
   return (
     <div className="space-y-6">
+      {notification && (
+        <div className="flex items-center justify-between rounded-[8px_2px_8px_2px] border border-accent/30 bg-accent/15 px-4 py-2.5 text-accent animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-center gap-2 font-mono text-xs font-semibold">
+            <CheckCircle2 className="h-4 w-4" />
+            <span>{notification}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setNotification(null)}
+            className="text-accent/70 hover:text-accent font-mono text-xs"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       <AdminPageHeader
         title="Content Tags & Topics"
         description="Organize taxonomy keywords and article linkages mapped to the @Tag model."
         model="Tag"
         actionLabel="Create Tag"
+        onAction={handleOpenCreate}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -77,7 +230,7 @@ export default function AdminTagsPage() {
         />
         <AdminStatCard
           label="Most Popular"
-          value="TypeScript"
+          value={tags[0]?.name || 'TypeScript'}
           icon={TagIcon}
           color="text-accent border-accent/20 bg-accent/10"
         />
@@ -94,9 +247,22 @@ export default function AdminTagsPage() {
         data={tags}
         searchKey="name"
         searchPlaceholder="Search tags..."
-        onDelete={(item) => {
-          setTags((prev) => prev.filter((t) => t.id !== item.id));
+        onEdit={handleOpenEdit}
+        onDelete={handleDelete}
+      />
+
+      <AdminDynamicModal<any>
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedTag(null);
         }}
+        onSave={handleSaveTag}
+        initialData={selectedTag}
+        title="Tag"
+        model="Tag"
+        fields={TAG_FIELDS}
+        schema={tagSchema}
       />
     </div>
   );

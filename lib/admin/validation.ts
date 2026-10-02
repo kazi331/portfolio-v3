@@ -199,3 +199,21 @@ export const courseSchema = z.object({
 });
 
 export type CourseFormData = z.infer<typeof courseSchema>;
+
+// Tag schema
+export const tagSchema = z.object({
+  name: z
+    .string()
+    .min(2, 'Tag label must be at least 2 characters')
+    .max(50, 'Tag label cannot exceed 50 characters'),
+  postCount: z
+    .coerce
+    .number()
+    .min(0, 'Post count cannot be negative')
+    .default(0),
+  createdAt: z
+    .string()
+    .optional(),
+});
+
+export type TagFormData = z.infer<typeof tagSchema>;

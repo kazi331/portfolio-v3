@@ -12,6 +12,7 @@ import {
   GraduationCap,
   Layers,
   LayoutDashboard,
+  Loader2,
   LogOut,
   MessageSquare,
   ShieldCheck,
@@ -206,20 +207,30 @@ export default function AdminSidebar({
   const pathname = usePathname();
   const router = useRouter();
   const isMobile = useIsMobile();
-  const showLabel = !isCollapsed || isMobile
-
+  const showLabel = !isCollapsed || isMobile;
+  const [isSigningOut, setIsSigningOut] = React.useState(false);
 
   const handleSignOut = async () => {
+    if (isSigningOut) return;
+    setIsSigningOut(true);
+
     if (onSignOut) {
-      onSignOut();
+      try {
+        await onSignOut();
+      } catch (err) {
+        console.warn('Signout error:', err);
+      } finally {
+        setIsSigningOut(false);
+      }
     } else {
       try {
         const { authClient } = await import('@/lib/auth-client');
         await authClient.signOut();
       } catch (err) {
         console.warn('Signout warning:', err);
+      } finally {
+        router.push('/admin/login');
       }
-      router.push('/admin/login');
     }
   };
 
@@ -368,11 +379,18 @@ export default function AdminSidebar({
           <button
             type="button"
             onClick={handleSignOut}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[6px_2px_6px_2px] border border-red-500/20 bg-red-500/10 text-red-300 hover:bg-red-500/20 hover:text-red-100 transition cursor-pointer"
-            title="Sign Out"
+            disabled={isSigningOut}
+            className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-[6px_2px_6px_2px] border border-red-500/20 bg-red-500/10 text-red-300 hover:bg-red-500/20 hover:text-red-100 transition cursor-pointer ${
+              isSigningOut ? 'opacity-80 cursor-wait animate-pulse' : ''
+            }`}
+            title={isSigningOut ? 'Signing out...' : 'Sign Out'}
             aria-label="Sign Out"
           >
-            <LogOut className="h-3.5 w-3.5" />
+            {isSigningOut ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-red-400" />
+            ) : (
+              <LogOut className="h-3.5 w-3.5" />
+            )}
           </button>
         </div>
       </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminDataTable, { Column } from '@/components/admin/AdminDataTable';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import AdminStatCard from '@/components/admin/AdminStatCard';
@@ -24,6 +24,23 @@ export default function AdminPostsPage() {
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
 
+  useEffect(() => {
+    async function loadPosts() {
+      try {
+        const res = await fetch('/api/posts');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+            setPostList(json.data);
+          }
+        }
+      } catch (err) {
+        console.warn('API fetch posts warning:', err);
+      }
+    }
+    loadPosts();
+  }, []);
+
   const showNotification = (message: string, type: 'success' | 'info' = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 4000);
@@ -39,26 +56,64 @@ export default function AdminPostsPage() {
     setIsModalOpen(true);
   };
 
-  const handleSavePost = (savedPost: BlogPost) => {
+  const handleSavePost = async (savedPost: BlogPost) => {
     if (editingPost) {
       // Update existing post
       setPostList((prev) =>
         prev.map((p) => (p.slug === editingPost.slug ? savedPost : p))
       );
       showNotification(`Article "${savedPost.title}" was updated successfully.`);
+
+      try {
+        const targetId = (editingPost as any).id || editingPost.slug;
+        await fetch(`/api/posts/${targetId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(savedPost),
+        });
+      } catch (err) {
+        console.warn('API update post error:', err);
+      }
     } else {
       // Create new post: prepend to list
       setPostList((prev) => [savedPost, ...prev]);
       showNotification(`Article "${savedPost.title}" was created successfully.`);
+
+      try {
+        const res = await fetch('/api/posts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(savedPost),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data?.id) {
+            setPostList((prev) =>
+              prev.map((p) => (p.slug === savedPost.slug ? { ...p, id: json.data.id } : p))
+            );
+          }
+        }
+      } catch (err) {
+        console.warn('API create post error:', err);
+      }
     }
     setIsModalOpen(false);
     setEditingPost(null);
   };
 
-  const handleDeletePost = (post: BlogPost) => {
+  const handleDeletePost = async (post: BlogPost) => {
     if (confirm(`Are you sure you want to delete "${post.title}"?`)) {
       setPostList((prev) => prev.filter((p) => p.slug !== post.slug));
       showNotification(`Article "${post.title}" was deleted.`, 'info');
+
+      try {
+        const targetId = (post as any).id || post.slug;
+        await fetch(`/api/posts/${targetId}`, {
+          method: 'DELETE',
+        });
+      } catch (err) {
+        console.warn('API delete post error:', err);
+      }
     }
   };
 

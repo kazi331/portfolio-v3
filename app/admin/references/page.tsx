@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminDataTable, { Column } from '@/components/admin/AdminDataTable';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import AdminStatCard from '@/components/admin/AdminStatCard';
@@ -47,6 +47,23 @@ export default function AdminReferencesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
 
+  useEffect(() => {
+    async function loadReferences() {
+      try {
+        const res = await fetch('/api/references');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+            setRefList(json.data);
+          }
+        }
+      } catch (err) {
+        console.warn('API fetch references warning:', err);
+      }
+    }
+    loadReferences();
+  }, []);
+
   const showNotification = (msg: string) => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 4000);
@@ -62,7 +79,7 @@ export default function AdminReferencesPage() {
     setIsModalOpen(true);
   };
 
-  const handleSave = (saved: any) => {
+  const handleSave = async (saved: any) => {
     if (selectedRef) {
       setRefList((prev) =>
         prev.map((r) =>
@@ -70,18 +87,60 @@ export default function AdminReferencesPage() {
         )
       );
       showNotification(`Reference "${saved.name}" was updated.`);
+
+      try {
+        const targetId = (selectedRef as any).id || selectedRef.email;
+        await fetch(`/api/references/${targetId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saved),
+        });
+      } catch (err) {
+        console.warn('API update reference error:', err);
+      }
     } else {
       setRefList((prev) => [saved, ...prev]);
       showNotification(`Reference "${saved.name}" was added.`);
+
+      try {
+        const res = await fetch('/api/references', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saved),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data?.id) {
+            setRefList((prev) =>
+              prev.map((r) =>
+                r.name === saved.name && r.email === saved.email
+                  ? { ...r, id: json.data.id }
+                  : r
+              )
+            );
+          }
+        }
+      } catch (err) {
+        console.warn('API create reference error:', err);
+      }
     }
     setIsModalOpen(false);
     setSelectedRef(null);
   };
 
-  const handleDelete = (item: Reference) => {
+  const handleDelete = async (item: Reference) => {
     if (confirm(`Remove reference "${item.name}"?`)) {
       setRefList((prev) => prev.filter((r) => r.name !== item.name || r.email !== item.email));
       showNotification(`Reference "${item.name}" was deleted.`);
+
+      try {
+        const targetId = (item as any).id || item.email;
+        await fetch(`/api/references/${targetId}`, {
+          method: 'DELETE',
+        });
+      } catch (err) {
+        console.warn('API delete reference error:', err);
+      }
     }
   };
 

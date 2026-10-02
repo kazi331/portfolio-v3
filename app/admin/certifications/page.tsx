@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminDataTable, { Column } from '@/components/admin/AdminDataTable';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import AdminStatCard from '@/components/admin/AdminStatCard';
@@ -47,6 +47,23 @@ export default function AdminCertificationsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
 
+  useEffect(() => {
+    async function loadCertifications() {
+      try {
+        const res = await fetch('/api/certifications');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+            setCertList(json.data);
+          }
+        }
+      } catch (err) {
+        console.warn('API fetch certifications warning:', err);
+      }
+    }
+    loadCertifications();
+  }, []);
+
   const showNotification = (msg: string) => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 4000);
@@ -62,7 +79,7 @@ export default function AdminCertificationsPage() {
     setIsModalOpen(true);
   };
 
-  const handleSave = (saved: any) => {
+  const handleSave = async (saved: any) => {
     if (selectedCert) {
       setCertList((prev) =>
         prev.map((c) =>
@@ -70,18 +87,60 @@ export default function AdminCertificationsPage() {
         )
       );
       showNotification(`Certificate "${saved.name}" was updated.`);
+
+      try {
+        const targetId = (selectedCert as any).id || selectedCert.name;
+        await fetch(`/api/certifications/${targetId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saved),
+        });
+      } catch (err) {
+        console.warn('API update certification error:', err);
+      }
     } else {
       setCertList((prev) => [saved, ...prev]);
       showNotification(`Certificate "${saved.name}" was added.`);
+
+      try {
+        const res = await fetch('/api/certifications', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(saved),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data?.id) {
+            setCertList((prev) =>
+              prev.map((c) =>
+                c.name === saved.name && c.issuer === saved.issuer
+                  ? { ...c, id: json.data.id }
+                  : c
+              )
+            );
+          }
+        }
+      } catch (err) {
+        console.warn('API create certification error:', err);
+      }
     }
     setIsModalOpen(false);
     setSelectedCert(null);
   };
 
-  const handleDelete = (item: Certification) => {
+  const handleDelete = async (item: Certification) => {
     if (confirm(`Remove certificate "${item.name}"?`)) {
       setCertList((prev) => prev.filter((c) => c.name !== item.name || c.issuer !== item.issuer));
       showNotification(`Certificate "${item.name}" was removed.`);
+
+      try {
+        const targetId = (item as any).id || item.name;
+        await fetch(`/api/certifications/${targetId}`, {
+          method: 'DELETE',
+        });
+      } catch (err) {
+        console.warn('API delete certification error:', err);
+      }
     }
   };
 
