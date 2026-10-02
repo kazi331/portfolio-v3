@@ -162,17 +162,15 @@ export default function AdminSkillsPage() {
   };
 
   const handleDelete = async (item: FlattenedSkill) => {
-    if (confirm(`Delete skill "${item.name}"?`)) {
-      setSkillsList((prev) => prev.filter((s) => s.id !== item.id));
-      showNotification(`Skill "${item.name}" was removed.`);
+    setSkillsList((prev) => prev.filter((s) => s.id !== item.id));
+    showNotification(`Skill "${item.name}" was removed.`);
 
-      try {
-        await fetch(`/api/skills/${item.id}`, {
-          method: 'DELETE',
-        });
-      } catch (err) {
-        console.warn('API delete skill error:', err);
-      }
+    try {
+      await fetch(`/api/skills/${item.id}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.warn('API delete skill error:', err);
     }
   };
 

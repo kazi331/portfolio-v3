@@ -42,11 +42,9 @@ export default function AdminCoursesPage() {
   };
 
   const handleDelete = (course: Course) => {
-    if (confirm(`Are you sure you want to remove course "${course.title}"?`)) {
-      const updated = deleteCourse(course.id);
-      setCourses(updated);
-      showNotification(`Course "${course.title}" was deleted.`);
-    }
+    const updated = deleteCourse(course.id);
+    setCourses(updated);
+    showNotification(`Course "${course.title}" was deleted.`);
   };
 
   const columns: Column<Course>[] = [

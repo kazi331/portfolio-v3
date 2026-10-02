@@ -150,18 +150,16 @@ export default function AdminExperiencePage() {
   };
 
   const handleDelete = async (item: WorkExperience) => {
-    if (confirm(`Remove position at "${item.company}"?`)) {
-      setExpList((prev) => prev.filter((e) => e.company !== item.company || e.role !== item.role));
-      showNotification(`Position at "${item.company}" was deleted.`);
+    setExpList((prev) => prev.filter((e) => e.company !== item.company || e.role !== item.role));
+    showNotification(`Position at "${item.company}" was deleted.`);
 
-      try {
-        const targetId = (item as any).id || item.company;
-        await fetch(`/api/experience/${targetId}`, {
-          method: 'DELETE',
-        });
-      } catch (err) {
-        console.warn('API delete experience error:', err);
-      }
+    try {
+      const targetId = (item as any).id || item.company;
+      await fetch(`/api/experience/${targetId}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.warn('API delete experience error:', err);
     }
   };
 

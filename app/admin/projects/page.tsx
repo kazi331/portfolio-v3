@@ -146,18 +146,16 @@ export default function AdminProjectsPage() {
   };
 
   const handleDeleteProject = async (proj: Project) => {
-    if (confirm(`Are you sure you want to delete "${proj.title}"?`)) {
-      setProjectList((prev) => prev.filter((p) => p.slug !== proj.slug));
-      showNotification(`Project "${proj.title}" was removed.`);
+    setProjectList((prev) => prev.filter((p) => p.slug !== proj.slug));
+    showNotification(`Project "${proj.title}" was removed.`);
 
-      try {
-        const targetId = (proj as any).id || proj.slug;
-        await fetch(`/api/projects/${targetId}`, {
-          method: 'DELETE',
-        });
-      } catch (err) {
-        console.warn('API delete project error:', err);
-      }
+    try {
+      const targetId = (proj as any).id || proj.slug;
+      await fetch(`/api/projects/${targetId}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.warn('API delete project error:', err);
     }
   };
 

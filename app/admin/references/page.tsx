@@ -129,18 +129,16 @@ export default function AdminReferencesPage() {
   };
 
   const handleDelete = async (item: Reference) => {
-    if (confirm(`Remove reference "${item.name}"?`)) {
-      setRefList((prev) => prev.filter((r) => r.name !== item.name || r.email !== item.email));
-      showNotification(`Reference "${item.name}" was deleted.`);
+    setRefList((prev) => prev.filter((r) => r.name !== item.name || r.email !== item.email));
+    showNotification(`Reference "${item.name}" was deleted.`);
 
-      try {
-        const targetId = (item as any).id || item.email;
-        await fetch(`/api/references/${targetId}`, {
-          method: 'DELETE',
-        });
-      } catch (err) {
-        console.warn('API delete reference error:', err);
-      }
+    try {
+      const targetId = (item as any).id || item.email;
+      await fetch(`/api/references/${targetId}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.warn('API delete reference error:', err);
     }
   };
 

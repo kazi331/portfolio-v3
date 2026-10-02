@@ -152,17 +152,15 @@ export default function AdminTagsPage() {
   };
 
   const handleDelete = async (item: TagItem) => {
-    if (confirm(`Are you sure you want to delete tag "${item.name}"?`)) {
-      setTags((prev) => prev.filter((t) => t.id !== item.id));
-      showNotification(`Tag "${item.name}" was deleted.`);
+    setTags((prev) => prev.filter((t) => t.id !== item.id));
+    showNotification(`Tag "${item.name}" was deleted.`);
 
-      try {
-        await fetch(`/api/tags/${item.id}`, {
-          method: 'DELETE',
-        });
-      } catch (err) {
-        console.warn('API delete tag error:', err);
-      }
+    try {
+      await fetch(`/api/tags/${item.id}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.warn('API delete tag error:', err);
     }
   };
 

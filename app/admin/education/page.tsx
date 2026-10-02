@@ -122,18 +122,16 @@ export default function AdminEducationPage() {
   };
 
   const handleDelete = async (item: Education) => {
-    if (confirm(`Remove degree "${item.degree}"?`)) {
-      setEduList((prev) => prev.filter((e) => e.degree !== item.degree || e.institution !== item.institution));
-      showNotification(`Degree "${item.degree}" was deleted.`);
+    setEduList((prev) => prev.filter((e) => e.degree !== item.degree || e.institution !== item.institution));
+    showNotification(`Degree "${item.degree}" was deleted.`);
 
-      try {
-        const targetId = (item as any).id || item.degree;
-        await fetch(`/api/education/${targetId}`, {
-          method: 'DELETE',
-        });
-      } catch (err) {
-        console.warn('API delete education error:', err);
-      }
+    try {
+      const targetId = (item as any).id || item.degree;
+      await fetch(`/api/education/${targetId}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.warn('API delete education error:', err);
     }
   };
 

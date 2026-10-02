@@ -181,17 +181,15 @@ export default function AdminStackPage() {
   };
 
   const handleDelete = async (item: StackItem) => {
-    if (confirm(`Remove "${item.name}" from stack?`)) {
-      setStackList((prev) => prev.filter((s) => s.id !== item.id));
-      showNotification(`"${item.name}" was removed.`);
+    setStackList((prev) => prev.filter((s) => s.id !== item.id));
+    showNotification(`"${item.name}" was removed.`);
 
-      try {
-        await fetch(`/api/stack/${item.id}`, {
-          method: 'DELETE',
-        });
-      } catch (err) {
-        console.warn('API delete stack error:', err);
-      }
+    try {
+      await fetch(`/api/stack/${item.id}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.warn('API delete stack error:', err);
     }
   };
 

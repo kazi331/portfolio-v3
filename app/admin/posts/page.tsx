@@ -102,18 +102,16 @@ export default function AdminPostsPage() {
   };
 
   const handleDeletePost = async (post: BlogPost) => {
-    if (confirm(`Are you sure you want to delete "${post.title}"?`)) {
-      setPostList((prev) => prev.filter((p) => p.slug !== post.slug));
-      showNotification(`Article "${post.title}" was deleted.`, 'info');
+    setPostList((prev) => prev.filter((p) => p.slug !== post.slug));
+    showNotification(`Article "${post.title}" was deleted.`, 'info');
 
-      try {
-        const targetId = (post as any).id || post.slug;
-        await fetch(`/api/posts/${targetId}`, {
-          method: 'DELETE',
-        });
-      } catch (err) {
-        console.warn('API delete post error:', err);
-      }
+    try {
+      const targetId = (post as any).id || post.slug;
+      await fetch(`/api/posts/${targetId}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.warn('API delete post error:', err);
     }
   };
 

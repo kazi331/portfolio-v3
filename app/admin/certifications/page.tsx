@@ -129,18 +129,16 @@ export default function AdminCertificationsPage() {
   };
 
   const handleDelete = async (item: Certification) => {
-    if (confirm(`Remove certificate "${item.name}"?`)) {
-      setCertList((prev) => prev.filter((c) => c.name !== item.name || c.issuer !== item.issuer));
-      showNotification(`Certificate "${item.name}" was removed.`);
+    setCertList((prev) => prev.filter((c) => c.name !== item.name || c.issuer !== item.issuer));
+    showNotification(`Certificate "${item.name}" was removed.`);
 
-      try {
-        const targetId = (item as any).id || item.name;
-        await fetch(`/api/certifications/${targetId}`, {
-          method: 'DELETE',
-        });
-      } catch (err) {
-        console.warn('API delete certification error:', err);
-      }
+    try {
+      const targetId = (item as any).id || item.name;
+      await fetch(`/api/certifications/${targetId}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.warn('API delete certification error:', err);
     }
   };
 

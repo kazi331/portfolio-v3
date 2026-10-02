@@ -22,7 +22,7 @@ const navItems: NavItem[] = [
   { label: 'Services', id: 'services', path: '/#services', type: 'section' },
   { label: 'Blog', id: 'blog', path: '/blog', type: 'page' },
   { label: 'Profile', id: 'profile', path: '/profile', type: 'page' },
-  { label: 'Admin', id: 'admin', path: '/admin', type: 'page' },
+  // { label: 'Admin', id: 'admin', path: '/admin', type: 'page' },
 ];
 
 const sectionItems = navItems.filter((item) => item.type === 'section');

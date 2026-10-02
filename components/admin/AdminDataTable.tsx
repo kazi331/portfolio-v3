@@ -2,6 +2,7 @@
 
 import { Edit3, Eye, Search, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
+import DeleteConfirmPopover from '@/components/admin/DeleteConfirmPopover';
 
 export interface Column<T> {
   header: string;
@@ -16,8 +17,9 @@ interface AdminDataTableProps<T> {
   searchKey?: keyof T;
   searchPlaceholder?: string;
   onEdit?: (item: T) => void;
-  onDelete?: (item: T) => void;
+  onDelete?: (item: T) => void | Promise<void>;
   onView?: (item: T) => void;
+  deleteItemName?: (item: T) => string;
   emptyMessage?: string;
 }
 
@@ -29,6 +31,7 @@ export default function AdminDataTable<T extends object>({
   onEdit,
   onDelete,
   onView,
+  deleteItemName,
   emptyMessage = 'No records found.',
 }: AdminDataTableProps<T>) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -130,14 +133,16 @@ export default function AdminDataTable<T extends object>({
                             </button>
                           )}
                           {onDelete && (
-                            <button
-                              type="button"
-                              onClick={() => onDelete(item)}
-                              className="rounded-[4px_1px_4px_1px] p-1 text-muted-text hover:bg-red-500/10 hover:text-red-400 transition"
-                              title="Delete Record"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
+                            <DeleteConfirmPopover
+                              onConfirm={() => onDelete(item)}
+                              itemName={
+                                deleteItemName
+                                  ? deleteItemName(item)
+                                  : (itemAny.title || itemAny.name || itemAny.degree || itemAny.role || itemAny.slug)
+                                  ? String(itemAny.title || itemAny.name || itemAny.degree || itemAny.role || itemAny.slug)
+                                  : undefined
+                              }
+                            />
                           )}
                         </div>
                       </td>
