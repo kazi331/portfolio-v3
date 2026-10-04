@@ -1,15 +1,16 @@
 "use client";
 
 import { json } from "@codemirror/lang-json";
-import { materialDark } from "@uiw/codemirror-theme-material";
-import CodeMirror from "@uiw/react-codemirror";
 import { EditorView } from "@codemirror/view";
+import { dracula } from "@uiw/codemirror-theme-dracula";
+import CodeMirror from "@uiw/react-codemirror";
+import "./shadowfox.css";
 
 const fontTheme = EditorView.theme({
   "&": { height: "100%", fontSize: "12px" },
   ".cm-scroller": { fontFamily: "'Courier New', monospace", overflow: "auto" },
   ".cm-gutters": { backgroundColor: "#263238", borderRight: "1px solid #1e272c" },
-  ".cm-lineNumbers .cm-gutterElement": { color: "#546e7a" },
+  ".cm-lineNumbers .cm-gutterElement": { color: "#546e7a" }
 });
 
 type Props = {
@@ -22,8 +23,8 @@ export function JsonEditor({ value, onChange }: Props) {
     <CodeMirror
       value={value}
       height="100%"
-      theme={materialDark}
-      extensions={[json(), EditorView.lineWrapping, fontTheme]}
+      theme={dracula}
+      extensions={[json(), EditorView.lineWrapping, fontTheme,]}
       basicSetup={{
         lineNumbers: true,
         highlightActiveLine: true,
