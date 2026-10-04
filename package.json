@@ -11,6 +11,11 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/view": "^6.43.13",
+    "@react-pdf/renderer": "^4.3.0",
+    "@uiw/codemirror-theme-material": "^4.23.0",
+    "@uiw/react-codemirror": "^4.23.0",
     "@better-auth/passkey": "^1.1.18",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",

@@ -1,0 +1,189 @@
+.appbar {
+  padding: 12px 20px;
+  background: var(--navy);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.appbar h1 {
+  font-size: 16px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.profileActions {
+  display: flex;
+  align-items: stretch;
+}
+
+.profileSelect {
+  background: white;
+  color: var(--navy);
+  border: none;
+  border-radius: 6px 0 0 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.generateBtn {
+  background: white;
+  color: var(--navy);
+  border: none;
+  padding: 8px 16px;
+  border-left: 1px solid #d7dce2;
+  border-radius: 0 6px 6px 0;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.generateBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.status {
+  font-size: 12px;
+  color: #dfe6ee;
+  min-width: 120px;
+}
+
+.statusError {
+  color: #ffb3b3;
+}
+
+.statusOk {
+  color: #b7f0c9;
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mobile tab toggle (hidden on desktop) */
+.tabbar {
+  display: none;
+  background: var(--panel);
+  border-bottom: 1px solid #ddd;
+}
+
+.tabbar button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  border-bottom: 3px solid transparent;
+}
+
+.tabbar button.active {
+  color: var(--navy);
+  border-bottom: 3px solid var(--navy);
+}
+
+.layout {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  min-height: 0;
+}
+
+.editorPane {
+  width: 42%;
+  min-width: 320px;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+}
+
+.editor {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.hint {
+  font-size: 11.5px;
+  color: #888;
+  margin: 6px 0 0;
+}
+
+.jsonError {
+  font-size: 12px;
+  color: #b00020;
+  background: #ffecec;
+  border: 1px solid #ffc7c7;
+  border-radius: 5px;
+  padding: 6px 10px;
+  margin-bottom: 8px;
+}
+
+.previewPane {
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Responsive: stack on mobile, tab-toggle between editor/preview */
+@media (max-width: 900px) {
+  .tabbar {
+    display: flex;
+    padding: 0 20px;
+  }
+
+  .layout {
+    flex-direction: column;
+  }
+
+  .editorPane {
+    width: 100%;
+    max-width: none;
+    border-bottom: 1px solid #ddd;
+    max-height: 95vh;
+    height: 100%;
+    padding: 14px;
+  }
+
+  .previewPane {
+    padding: 12px;
+  }
+
+  .showEditorOnly .previewPane {
+    display: none;
+  }
+
+  .showPreviewOnly .editorPane {
+    display: none;
+  }
+}
