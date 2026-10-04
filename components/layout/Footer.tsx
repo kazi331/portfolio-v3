@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import Container from '@/components/shared/Container';
 import { personalInfo } from '@/lib/data';
 
@@ -36,6 +35,12 @@ export default function Footer() {
               className="hover:text-accent transition-colors duration-300"
             >
               Email
+            </a>
+            <a
+              href="/resume"
+              className="hover:text-accent transition-colors duration-300"
+            >
+              Resume
             </a>
           </div>
         </div>
