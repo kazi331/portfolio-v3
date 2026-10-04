@@ -4,7 +4,6 @@ import { json } from "@codemirror/lang-json";
 import { EditorView } from "@codemirror/view";
 import { dracula } from "@uiw/codemirror-theme-dracula";
 import CodeMirror from "@uiw/react-codemirror";
-import "./shadowfox.css";
 
 const fontTheme = EditorView.theme({
   "&": { height: "100%", fontSize: "12px" },
