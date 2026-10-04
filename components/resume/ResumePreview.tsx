@@ -84,7 +84,13 @@ export function ResumePreview({ data }: Props) {
               {")"}
             </>
           ) : null}
-          <br />• {p.description} <i>Stack: {p.stack}</i>
+          <br />
+          <ul className={styles.bullets}>
+            {(p.highlights ?? []).map((h, i) => (
+              <li key={`${h}-${i}`}>{h}</li>
+            ))}
+          </ul>
+          <span className={styles.stackLabel}>Stack: </span><span className={styles.stack}>{p.stack}</span><br />
         </div>
       ))}
 
@@ -104,9 +110,13 @@ export function ResumePreview({ data }: Props) {
 
       <div className={styles.sectionHeading}>Education &amp; Languages</div>
       <div className={styles.eduLine}>
-        {(data.education ?? []).map((e) => `${e.degree} — ${e.school}`).join("   |   ")}
+        <ul >
+          {(data.education ?? []).map((e) => (
+            <li key={`${e.degree}-${e.school}`}>{e.degree} — {e.school}</li>
+          ))}
+        </ul>
+        <div><span style={{ fontWeight: "bold", fontSize: "10px" }}>Languages:</span>  <span className={styles.eduLine}>{data.languages}</span></div>
       </div>
-      <div className={styles.eduLine}>{data.languages}</div>
     </div>
   );
 }

@@ -54,7 +54,7 @@
         "text": "devsnest.net",
         "url": "https://devsnest.net/"
       },
-      "dates": "Oct 2025 – Present",
+      "dates": "Oct 2025 – August 2026",
       "title": "Software Engineer"
     },
     {
@@ -114,19 +114,19 @@
   "phone": "+8801612-178331",
   "projects": [
     {
-      "description": "Solo-built bundle/checkout app for Shopify merchants, end-to-end — DB design to storefront UI.",
+      "highlights": [ "Solo-built bundle/checkout app for Shopify merchants, end-to-end — DB design to storefront UI."],
       "link": "https://mixory-bundles.com/",
       "stack": "Next.js, React, Node.js, Prisma, PostgreSQL, Shopify Functions",
       "title": "Mixory Bundles — Shopify App"
     },
     {
-      "description": "Course search/enrollment, progress tracking, real-time chat, admin panel.",
+      "highlights": [ "Course search/enrollment, progress tracking, real-time chat, admin panel."],
       "link": null,
       "stack": "Next.js 14, Redux, TanStack Query, NestJS, Tailwind CSS",
       "title": "EdTech Learning Platform"
     },
     {
-      "description": "Auth, document upload, real-time notifications via Firebase.",
+      "highlights": [ "Auth, document upload, real-time notifications via Firebase."],
       "link": "https://play.google.com/store/apps/details?id=com.approveage&hl=en",
       "stack": "React Native, Redux, Firebase, REST API",
       "title": "Maison: The Property App"

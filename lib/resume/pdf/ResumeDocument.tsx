@@ -47,10 +47,19 @@ const s = StyleSheet.create({
   jobTitle: { fontSize: 9.5, fontWeight: 700, color: NAVY, lineHeight: 1.15 },
   jobDates: { fontSize: 8.5, fontWeight: 700, lineHeight: 1.15, textAlign: "right" },
   company: { fontSize: 8.5, fontStyle: "italic", lineHeight: 1.2, marginBottom: 1.5 },
+  langLabel: { fontWeight: 700, fontStyle: "normal" },
   bulletRow: { flexDirection: "row", marginBottom: 1 },
-  bulletMark: { width: 12, fontSize: 9, lineHeight: 1.25 },
-  bulletText: { flex: 1, fontSize: 9, lineHeight: 1.25 },
-  project: { fontSize: 9, lineHeight: 1.25, marginBottom: 1.5 },
+  bulletMark: {
+    width: 8,
+    marginRight: 1,
+    fontSize: 9,
+    lineHeight: 1.32,
+    textAlign: "right",
+  },
+  bulletText: { flex: 1, fontSize: 9, lineHeight: 1.32 },
+  project: { marginBottom: 1.5 },
+  stackLine: { marginLeft: 7.5, fontSize: 8, lineHeight: 1.2 },
+  stackLabel: { fontWeight: 700, fontSize: 8, marginLeft: 0 },
   stack: { fontSize: 8, fontStyle: "italic" },
   small: { fontSize: 8, lineHeight: 1.2 },
   link: { color: GRAY, textDecoration: "underline" },
@@ -62,6 +71,15 @@ function A({ href, children }: { href: string; children: ReactNode }) {
       {children}
     </Link>
   );
+}
+
+function BulletList({ items, mark = "-" }: { items: string[]; mark?: string }) {
+  return (items ?? []).map((item, i) => (
+    <View key={i} style={s.bulletRow} wrap={false}>
+      <Text style={s.bulletMark}>{mark}</Text>
+      <Text style={s.bulletText}>{item}</Text>
+    </View>
+  ));
 }
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -130,30 +148,30 @@ export function ResumeDocument({ data }: { data: Resume }) {
                   ) : null}
                 </Text>
               </View>
-              {job.bullets.map((b, j) => (
-                <View key={j} style={s.bulletRow} wrap={false}>
-                  <Text style={s.bulletMark}>•</Text>
-                  <Text style={s.bulletText}>{b}</Text>
-                </View>
-              ))}
+              <BulletList items={job.bullets} />
             </View>
           ))}
         </Section>
 
         <Section title="Key Projects">
           {data.projects.map((p, i) => (
-            <Text key={`${p.title}-${i}`} style={s.project}>
-              <Text style={s.navyBold}>{p.title}</Text>
-              {p.link ? (
-                <>
-                  {" ("}
-                  <A href={p.link}>{linkLabel(p.link)}</A>
-                  {")"}
-                </>
-              ) : null}
-              {"\n• "}
-              {p.description} <Text style={s.stack}>Stack: {p.stack}</Text>
-            </Text>
+            <View key={`${p.title}-${i}`} style={s.project}>
+              <Text style={s.body}>
+                <Text style={s.navyBold}>{p.title}</Text>
+                {p.link ? (
+                  <>
+                    {" ("}
+                    <A href={p.link}>{linkLabel(p.link)}</A>
+                    {")"}
+                  </>
+                ) : null}
+              </Text>
+              <BulletList items={p.highlights} />
+              <Text style={s.stackLine}>
+                <Text style={s.stackLabel}>Stack: </Text>
+                <Text style={s.stack}>{p.stack}</Text>
+              </Text>
+            </View>
           ))}
         </Section>
 
@@ -174,10 +192,15 @@ export function ResumeDocument({ data }: { data: Resume }) {
         </Section>
 
         <Section title="Education & Languages">
+          {data.education.map((e, i) => (
+            <Text key={`${e.degree}-${i}`} style={s.company}>
+              {`${e.degree} — ${e.school}`}
+            </Text>
+          ))}
           <Text style={s.company}>
-            {data.education.map((e) => `${e.degree} — ${e.school}`).join("   |   ")}
+            <Text style={s.langLabel}>Languages: </Text>
+            {data.languages}
           </Text>
-          <Text style={s.company}>{data.languages}</Text>
         </Section>
       </Page>
     </Document>

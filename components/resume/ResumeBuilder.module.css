@@ -17,6 +17,7 @@
 
 .actions {
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
@@ -185,5 +186,14 @@
 
   .showPreviewOnly .editorPane {
     display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .appbar {
+    justify-content: center;
+  }
+  .actions {
+    justify-content: center;
   }
 }

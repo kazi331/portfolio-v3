@@ -23,7 +23,7 @@ export const resumeSchema = z.object({
   projects: z.array(
     z.object({
       title: z.string(),
-      description: z.string(),
+      highlights: z.array(z.string()),
       stack: z.string(),
       link: z.string().nullish(),
     }),

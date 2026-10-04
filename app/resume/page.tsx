@@ -2,7 +2,15 @@
 import { ResumeBuilder } from "@/components/resume/ResumeBuilder";
 import { DEFAULT_PROFILE, loadProfileText, PROFILE_OPTIONS } from "@/lib/resume/profiles";
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./resume.css";
+
+export const resumeFont = Inter({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  variable: "--font-resume",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Resume PDF Generator",
@@ -16,10 +24,12 @@ export default async function Page() {
   const initialJson = JSON.stringify(JSON.parse(await loadProfileText(DEFAULT_PROFILE)), null, 2);
 
   return (
-    <ResumeBuilder
-      profiles={PROFILE_OPTIONS}
-      initialProfile={DEFAULT_PROFILE}
-      initialJson={initialJson}
-    />
+    <div className={`${resumeFont.variable} shell`}>
+      <ResumeBuilder
+        profiles={PROFILE_OPTIONS}
+        initialProfile={DEFAULT_PROFILE}
+        initialJson={initialJson}
+      />
+    </div>
   );
 }

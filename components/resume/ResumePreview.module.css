@@ -6,7 +6,7 @@
   background: white;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.03);
   padding: 30.7pt 41.3pt 28pt 41.3pt;
-  font-family: "ResumeFont", sans-serif;
+  font-family: var(--font-resume), sans-serif;
   color: var(--gray);
   overflow: auto;
   border-radius: 6px;
@@ -100,6 +100,7 @@
   font-size: 9pt;
   line-height: 1.32;
   margin-bottom: 1pt;
+  list-style-type: "-";
 }
 
 .projectLine {
@@ -108,8 +109,15 @@
   margin: 0 0 1.5pt 0;
 }
 
-.projectLine i {
+.stackLabel {
+  margin-left: 10px;
+  font-weight: 700;
   font-size: 8pt;
+}
+
+.stack {
+  font-size: 8pt;
+  font-style: italic;
 }
 
 .projectTitle {

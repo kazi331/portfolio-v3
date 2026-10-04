@@ -134,7 +134,7 @@ export function ResumeBuilder({ profiles, initialProfile, initialJson }: Props) 
               onClick={handleGenerate}
               disabled={generating}
             >
-              Generate &amp; Download PDF
+              Download PDF
             </button>
           </div>
         </div>
