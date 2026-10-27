@@ -1,0 +1,34 @@
+:root {
+  --navy: #1f2d3d;
+  --gray: #3a3a3a;
+  --link: #1f4e8c;
+  --line: #aaaaaa;
+  --bg: #f1f3f6;
+  --panel: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  /* font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; */
+  background: var(--bg);
+  color: var(--gray);
+  display: flex;
+  flex-direction: column;
+}
+
+.shell {
+  font-family: var(--font-resume), sans-serif;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}

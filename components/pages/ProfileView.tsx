@@ -73,7 +73,7 @@ export default function ProfileView() {
                                         <ExternalLink className="h-3.5 w-3.5" />
                                     </a>
                                     <a
-                                        href="https://resume-generator-d6vd.onrender.com/download"
+                                        href="/api/resume/download"
                                         target="_blank"
                                         rel="noreferrer"
                                         className="inline-flex items-center gap-2 rounded-[12px_3px_12px_3px] border border-accent/40 bg-accent/15 px-5 py-3 text-[11px] font-mono font-bold uppercase tracking-wider text-accent-secondary transition hover:border-accent hover:bg-accent/25 active:scale-95 shadow-sm"
