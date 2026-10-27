@@ -64,6 +64,7 @@
 
 .root [contenteditable="true"]:focus {
   background: #fff9e9;
+  color: var(--ink);
   box-shadow: 0 0 0 2px #c5a56a80;
 }
 

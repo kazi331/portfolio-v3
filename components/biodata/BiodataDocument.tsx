@@ -126,16 +126,18 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-export function BiodataDocument() {
+export function BiodataDocument({ editable = false }: { editable?: boolean }) {
   return (
     <div className={styles.root}>
       <div className={styles.toolbar}>
-        <EditButton />
+        {editable ? <EditButton /> : null}
         <PrintButton />
       </div>
-      <p id="biodata-hint" className={styles.hint}>
-        Edit text in place, then print or save as PDF.
-      </p>
+      {editable ? (
+        <p id="biodata-hint" className={styles.hint}>
+          Edit text in place, then print or save as PDF.
+        </p>
+      ) : null}
 
       <main id="biodata" className={styles.document}>
         <section className={styles.page}>
